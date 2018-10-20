@@ -1,0 +1,4 @@
+#lang racket
+
+(define grammar '(";" "?" "*" "U"))
+(define graph (open-input-file "graph1.txt"))
