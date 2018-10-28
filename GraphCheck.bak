@@ -1,4 +1,18 @@
 #lang racket
 
-(define grammar '(";" "?" "*" "U"))
-(define graph (open-input-file "graph1.txt"))
+
+(struct graph-body (W R)) ; Estrutura do grafo será vertices relações valoração
+(define all-graph ( graph-body (list 'A 'B) #| Vertices |# (list (list '(A B alfa) '(B A beta))))) #| Relações alfa e beta |#
+  
+(struct PDL (program))
+(define allprog ( PDL (list '[alfa]'psi'[alfa]'psi?'omega)))
+
+
+
+#| Duvidas:
+    Estrutura do grafo precisa da valoração?
+    Estrutura do PDL será [alfa]'psi ou só alfa;psi?;beta
+    Como checar se existe uma arestra dentro da lista
+    input do arquivo para dentro do struct
+    Como utilizar o charactere especial ; sem virar comentário
+|#
