@@ -25,10 +25,14 @@
     (println i)
     (println (list-ref (relacoes grafo) (index-of (vertices grafo) i)))))
 
+
+; Retorna #t se o grafo g possui o vertice v
 (define (tem-vertice g v)
   (for([i (vertices g)])
      (equal? v i)#t))
 
+
+; Retorna #t se o grafo g possui uma aresta do vertice o para o vertice d 
 (define (tem-aresta? g o d)
   (tem-vertice g o)(tem-vertice g d)
   (for([i (vertices g)])
@@ -38,12 +42,15 @@
           (equal? (car j) i) #t)))
 
 
+; Retorna #t se o grafo g possui uma aresta do vertice o para o vertice d marcada pela relação p
 (define (tem-arestamarcada? g o d p)
   (tem-vertice g o)(tem-vertice g d)
      (for([i (vertices g)])
        (equal? o i) 
         (for ([j (list-ref(relacoes g) (index-of (vertices g) i))])
           (and (equal? (cdr j) i) (equal? (car j) p) #t))))
+
+
 
 ;Problema no equal
 #|
