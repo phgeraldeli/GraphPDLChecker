@@ -3,7 +3,7 @@
 ;(require graph)
 
 (struct graph-body (W R)) ; Estrutura do grafo será vertices relações valoração
-(define grafo1 ( graph-body (list 'A 'B 'C) #| Vertices |# (list '('alfa B) '('('alfa B) '('beta C)) '()))) #| (relacoes de A)(relacoes de B)(relacoes de C)|#
+(define grafo1 ( graph-body (list 'A 'B 'C) #| Vertices |# (list '(alfa B) '('(alfa B) '(beta C)) '()))) #| (relacoes de A)(relacoes de B)(relacoes de C)|#
  
 (struct PDL (program))
 (define allprog ( PDL (list 'alfa 'beta 'alfa)))
@@ -51,8 +51,11 @@
           (and (equal? (cdr j) i) (equal? (car j) p) #t))))
 
 
+;percorre o PDL a partir da posicao atual retornando o bloco daquela posicao.
 
-;Problema no equal
+;(define (percorrerPDL program posAtual))
+
+;Problema no equal, não está restornando true nas funções: tem-vertice tem-aresta tem-arestamarcada
 #|
 (define (run grafo program)
   (for ([i (vertices grafo)])
