@@ -2,11 +2,26 @@
 
 
 (struct graph-body (W R)) ; Estrutura do grafo será vertices relações valoração
-(define all-graph ( graph-body (list 'A 'B) #| Vertices |# (list (list '(A B alfa) '(B A alfa))))) #| Relações alfa e beta |#
-  
+(define grafo1 ( graph-body (list 'A 'B 'C) #| Vertices |# (list '(alfa B) (list '(alfa B) '(beta C)) '()))) #| Relações alfa e beta |#
+ 
 (struct PDL (program))
-(define allprog ( PDL (list alfa beta alfa)))
+(define allprog ( PDL (list 'alfa 'beta 'alfa)))
 
+(define (vertices grafo)
+  (graph-body-W grafo))
+
+(define (relacoes grafo)
+  (graph-body-R grafo))
+
+(define (mostrarvertices grafo)
+  (for ([i (vertices grafo)])
+    (print i))) #| fazer alguma coisa com os vertices |#
+
+(define (mostrarrelacoes grafo)
+  (for ([i (vertices grafo)])
+    (println i)
+    (println (list-ref (relacoes grafo) (index-of (vertices grafo) i)))
+    ))
 
 
 #| Duvidas:
