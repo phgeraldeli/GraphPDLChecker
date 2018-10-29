@@ -3,7 +3,7 @@
 ;(require graph)
 
 (struct graph-body (W R)) ; Estrutura do grafo será vertices relações valoração
-(define grafo1 ( graph-body (list 'A 'B 'C) #| Vertices |# (list '(alfa B) '('(alfa B) '(beta C)) '()))) #| (relacoes de A)(relacoes de B)(relacoes de C)|#
+(define grafo1 ( graph-body (list 'A 'B 'C) #| Vertices |# (list '('(alfa B)) '('(alfa B) '(beta C)) '('())))) #| (relacoes de A)(relacoes de B)(relacoes de C)|#
  
 (struct PDL (program))
 (define allprog ( PDL (list 'alfa 'beta 'alfa)))
@@ -37,8 +37,7 @@
   (tem-vertice g o)(tem-vertice g d)
   (for([i (vertices g)])
       (equal? o i)
-        (print i)
-       (for ([j (list-ref(relacoes g) (index-of (vertices g) i))])
+        (for ([j (list-ref(relacoes g) (index-of (vertices g) i))])
           (equal? (car j) i) #t)))
 
 
@@ -49,6 +48,8 @@
        (equal? o i) 
         (for ([j (list-ref(relacoes g) (index-of (vertices g) i))])
           (and (equal? (cdr j) i) (equal? (car j) p) #t))))
+
+
 
 
 ;percorre o PDL a partir da posicao atual retornando o bloco daquela posicao.
