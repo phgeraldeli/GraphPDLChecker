@@ -2,9 +2,12 @@
 
 ;(require graph)
 
-(struct graph-body (W R)) ; Estrutura do grafo será vertices relações valoração
-(define grafo1 ( graph-body (list 'A 'B 'C) #| Vertices |# (list '('(alfa B)) '('(alfa B) '(beta C)) '('())))) #| (relacoes de A)(relacoes de B)(relacoes de C)|#
- 
+(struct graph-body (W R)); Estrutura do grafo será vertices(Nome, "visitado") e relações (transição, destino)
+
+(define grafo1 ( graph-body (list '("A" 0) '("B" 0) '("C" 0)) #| Vertices |#
+                            (list '('("alfa" "B")) '('("alfa" "B") '("beta" "C")) '('()))))
+                            #| (relacoes de A)      (relacoes de B)                (relacoes de C)|#
+
 (struct PDL (program))
 (define allprog ( PDL (list 'alfa 'beta 'alfa)))
 
@@ -27,9 +30,23 @@
 
 
 ; Retorna #t se o grafo g possui o vertice v
-(define (tem-vertice g v)
+(define (tem-vertice g v) ;transformar em recursivo
   (for([i (vertices g)])
-     (equal? v i)#t))
+     (if (equal? v (car i))
+         (println #t)
+         (println #f))
+    (println (car i))))
+
+(define (verticerec gv vp)  ;chamada (verticered (vertices g) "VERTICE")
+  (if (equal? '() gv)
+      #f
+      (if (equal? vp (car (car gv)))
+          #t
+          (verticerec (cdr gv) vp)
+      )
+  )
+)
+
 
 
 ; Retorna #t se o grafo g possui uma aresta do vertice o para o vertice d 
