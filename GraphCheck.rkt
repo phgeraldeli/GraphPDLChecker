@@ -5,7 +5,13 @@
 (struct graph-body (W R)); Estrutura do grafo será vertices(Nome, "visitado") e relações (transição, destino)
 
 (define grafo1 ( graph-body (list '(A 0) '(B 0) '(C 0)) #| Vertices |#
-                            (list '((alfa B)) '((alfa B) (beta C)) '())))
+                            (list
+                             '((alfa B))
+                             '((alfa B) (beta C))
+                             '()
+                             )
+               )
+)
                             #| (relacoes de A)      (relacoes de B)                (relacoes de C)|#
 #|vertices é uma lista de listas, sendo cada lista uma um vertice e seu estado de visitado|#
 #|relacoes é uma lista de listas de listas, sendo cada lista as relacoes de um vertice, e a relacao uma lista com "transição, destino" |#
@@ -97,13 +103,32 @@
    #f)
 )
 
-(define (tem-aresta-vertice? rel dest)
+(define (tem-aresta-vertice? rel dest) ;função auxiliar de tem-aresta-rec?
   (if (equal? rel '())
       #f
       (if(equal? (car (cdr (car rel))) dest)
          #t
          (tem-aresta-vertice? (cdr rel) dest))))
   
+(define (tem-aresta-marcada-rec? g o d p)
+  (if(tem-vertice? g o)
+     (if(tem-vertice? g d)
+        (tem-aresta-marcada-vertice? (list-ref (relacoes grafo1) (index-vertice grafo1 o)) d p)
+     #f)
+   #f)
+)
+
+(define (tem-aresta-marcada-vertice? rel dest p) ;função auxiliar de tem-aresta-marcada-rec?
+  (if (equal? rel '())
+      #f
+      (if(equal? (car (cdr (car rel))) dest)
+         (if (equal? (car (car rel)) p)
+              #t
+              (tem-aresta-vertice? (cdr rel) dest))
+         (tem-aresta-vertice? (cdr rel) dest))
+  )
+)
+
 
 
 ; Retorna #t se o grafo g possui uma aresta do vertice o para o vertice d marcada pela relação p
