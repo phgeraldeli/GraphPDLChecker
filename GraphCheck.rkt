@@ -81,9 +81,9 @@
   (index-vertice-rec (vertices g) vp))
 (define (index-vertice-rec gv vp)
   (if(equal? '() gv)
-     #f
+     -inf.f
      (if (equal? vp (car (car gv)))
-          (+ 0)
+          0
           (+ 1 (index-vertice-rec (cdr gv) vp)))))
 
   
