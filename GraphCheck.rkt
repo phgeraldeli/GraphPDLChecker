@@ -15,7 +15,7 @@
   (mostrarverticesrec (vertices grafo)))
 
 (define (mostrarverticesrec vertices) ;printa vertices recursivamente
-  (write (car (car vertices)))
+  (write (car vertices))
   (if (equal? '() (cdr vertices))
       (values)
       (write '-)
@@ -36,7 +36,7 @@
 
 (define (mostrarrelacoesrec vertices relacoes)
   (display "\n")
-  (write (car (car vertices)))
+  (write (car vertices))
   (display ":=")
   (if (equal? '() (car relacoes))
       (values)
@@ -47,7 +47,7 @@
   
 (define (mostrarrelacoesdeumvertice relvertice) ;auxiliar da função acima
   ;(write relvertice)
-  (write (car (car relvertice)))
+  (write (car relvertice))
   (write "->")
   (write (car (cdr (car relvertice))))
   (display " / ")
@@ -63,7 +63,7 @@
 (define (verticerec? gv vp)  ;chamada (verticered (vertices g) 'VERTICE)
   (if (equal? '() gv)
       #f
-      (if (equal? vp (car (car gv)))
+      (if (equal? vp (car gv))
           #t
           (verticerec? (cdr gv) vp))))
 
@@ -72,23 +72,16 @@
 (define (index-vertice-rec gv vp)
   (if(equal? '() gv)
      -inf.f
-     (if (equal? vp (car (car gv)))
+     (if (equal? vp (car gv))
           0
           (+ 1 (index-vertice-rec (cdr gv) vp)))))
 
   
 ; Retorna #t se o grafo g possui uma aresta do vertice o para o vertice d 
-(define (tem-aresta? g o d)
-  (tem-vertice? g o)(tem-vertice? g d)
-  (for([i (vertices g)])
-      (equal? o i)
-        (for ([j (list-ref(relacoes g) (index-of (vertices g) i))])
-          (equal? (car j) i) #t)))
-
 (define (tem-aresta-rec? g o d)
   (if(tem-vertice? g o)
      (if(tem-vertice? g d)
-        (tem-aresta-vertice? (list-ref (relacoes grafo1) (index-vertice grafo1 o)) d)
+        (tem-aresta-vertice? ( list-ref (relacoes g) (index-vertice g o)) d)
      #f)
    #f)
 )
@@ -96,7 +89,7 @@
 (define (tem-aresta-vertice? rel dest) ;função auxiliar de tem-aresta-rec?
   (if (equal? rel '())
       #f
-      (if(equal? (car (cdr (car rel))) dest)
+      (if(equal? (car (cdr (cdr (car rel)))) dest)
          #t
          (tem-aresta-vertice? (cdr rel) dest))))
   
@@ -111,8 +104,8 @@
 (define (tem-aresta-marcada-vertice? rel dest p) ;função auxiliar de tem-aresta-marcada-rec?
   (if (equal? rel '())
       #f
-      (if(equal? (car (cdr (car rel))) dest)
-         (if (equal? (car (car rel)) p)
+      (if(equal? (car (cdr (cdr (car rel)))) dest)
+         (if (equal? (car (cdr (car rel))) p)
               #t
               (tem-aresta-vertice? (cdr rel) dest))
          (tem-aresta-vertice? (cdr rel) dest))
@@ -150,10 +143,10 @@
 
 ;"main"
 ;(struct graph-body (W R))
-(define grafo1 ( graph-body (list '(A 0) '(B 0) '(C 0)) #| Vertices |#
+(define grafo1 ( graph-body (list 'A 'B 'C) #| Vertices |#
                             (list
-                             '((alfa B))
-                             '((alfa B) (beta C))
+                             '((0 alfa B))
+                             '((0 alfa B) (0 beta C))
                              '()
                              )
                )
