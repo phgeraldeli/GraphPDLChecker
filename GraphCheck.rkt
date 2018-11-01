@@ -129,6 +129,8 @@
   (PDL-program prog))
 
 (struct sequential (prog))
+(define (seqprog seq)
+  (sequential-prog seq))
 (struct nondeterministic (progA progB))
 (struct iteration (prog))
   
