@@ -1,24 +1,9 @@
 #lang racket
-
-;(require graph)
-
 (struct graph-body (W R)); Estrutura do grafo será vertices(Nome, "visitado") e relações (transição, destino)
-
-(define grafo1 ( graph-body (list '(A 0) '(B 0) '(C 0)) #| Vertices |#
-                            (list
-                             '((alfa B))
-                             '((alfa B) (beta C))
-                             '()
-                             )
-               )
-)
                             #| (relacoes de A)      (relacoes de B)                (relacoes de C)|#
 #|vertices é uma lista de listas, sendo cada lista uma um vertice e seu estado de visitado|#
-#|relacoes é uma lista de listas de listas, sendo cada lista as relacoes de um vertice, e a relacao uma lista com "transição, destino" |#
-
-(struct PDL (program))
-(define allprog ( PDL (list 'alfa 'beta 'alfa)))
-
+#|relacoes é uma lista de listas de listas, sendo cada lista as relacoes de um vertice,
+ e a relacao uma lista com "transição, destino" |#
 (define (vertices grafo)
   (graph-body-W grafo))
 
@@ -29,7 +14,7 @@
   (println "Vertices do grafo")
   (mostrarverticesrec (vertices grafo)))
 
-(define (mostrarverticesrec vertices)
+(define (mostrarverticesrec vertices) ;printa vertices recursivamente
   (write (car (car vertices)))
   (if (equal? '() (cdr vertices))
       (values)
@@ -47,6 +32,8 @@
   (println "Relações do grafo")
   (mostrarrelacoesrec (vertices grafo) (relacoes grafo)))
 
+;printa relacoes de um vertice
+
 (define (mostrarrelacoesrec vertices relacoes)
   (display "\n")
   (write (car (car vertices)))
@@ -58,7 +45,7 @@
       (values)
       (mostrarrelacoesrec (cdr vertices) (cdr relacoes))))
   
-(define (mostrarrelacoesdeumvertice relvertice)
+(define (mostrarrelacoesdeumvertice relvertice) ;auxiliar da função acima
   ;(write relvertice)
   (write (car (car relvertice)))
   (write "->")
@@ -67,6 +54,9 @@
   (if (equal? '() (cdr relvertice))
       (values)
       (mostrarrelacoesdeumvertice (cdr relvertice))))
+
+
+
 ; Retorna #t se o grafo g possui o vertice v
 (define (tem-vertice? g v) ;função auxiliar para diminuir o tamanho da chamada
   (verticerec? (vertices g) v))
@@ -77,7 +67,7 @@
           #t
           (verticerec? (cdr gv) vp))))
 
-(define (index-vertice g vp)
+(define (index-vertice g vp)         ;retorna o indice do vertice procurado, e -inf caso nao exista
   (index-vertice-rec (vertices g) vp))
 (define (index-vertice-rec gv vp)
   (if(equal? '() gv)
@@ -129,15 +119,44 @@
   )
 )
 
+;(struct graph-body (W R))
+;(define (vertices grafo)
+ ; (graph-body-W grafo))
+
+(struct PDL (program))
+
+(define (programapdl prog)
+  (PDL-program prog))
+
+(struct sequential (prog))
+(struct nondeterministic (progA progB))
+(struct iteration (prog))
+  
+(define (validgraph program g)
+  
+  (if (sequential? (car (programapdl program1)))
+      #t
+      #f
+      ))
+
+(define nd1 (nondeterministic 'B 'C))
+(define seq1 (sequential nd1))
+(define seq2 (sequential 'B))
+(define program1 (PDL (list seq1 seq2)))
 
 
-; Retorna #t se o grafo g possui uma aresta do vertice o para o vertice d marcada pela relação p
-(define (tem-arestamarcada? g o d p)
-  (tem-vertice? g o)(tem-vertice? g d)
-     (for([i (vertices g)])
-       (equal? o i) 
-        (for ([j (list-ref(relacoes g) (index-of (vertices g) i))])
-          (and (equal? (cdr j) i) (equal? (car j) p) #t))))
+
+;"main"
+;(struct graph-body (W R))
+(define grafo1 ( graph-body (list '(A 0) '(B 0) '(C 0)) #| Vertices |#
+                            (list
+                             '((alfa B))
+                             '((alfa B) (beta C))
+                             '()
+                             )
+               )
+)
+
 
 
 
