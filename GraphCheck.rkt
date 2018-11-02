@@ -1,5 +1,6 @@
 #lang racket
-(struct graph-body (W R)); Estrutura do grafo será vertices(Nome, "visitado") e relações (transição, destino)
+(struct graph-body (W R))
+; Estrutura do grafo será vertices(Nome, "visitado") e relações (transição, destino)
                             #| (relacoes de A)      (relacoes de B)                (relacoes de C)|#
 #|vertices é uma lista de listas, sendo cada lista uma um vertice e seu estado de visitado|#
 #|relacoes é uma lista de listas de listas, sendo cada lista as relacoes de um vertice,
@@ -154,21 +155,25 @@
   
 (define (valid-graph pdl g)
   (valid-graph-aux (programa-pdl) g (car (vertices g))))
-
+#|
 (define (valid-graph-aux program grafo vertice)
   (cond
     [(equal? program '()) (cond
                             [])]))
-
+|#
 
 
 #|Ideia de resolução
 (define (validgraph program g)
   (match program
-    [(sequential? (car (programapdl program1)))   Anda no programa e anda no grafo, Chama recursivamente] ;Sequencia Normal
-    [(nondeterministic? (car (programapdl program1))) Pega o caminho da esquerda chama recursivo, volta no backtracking chama o da direita recursivo, anda no grafo] ;Escolha nao deterministica
+    [(sequential? (car (programapdl program1)))   
+    Anda no programa e anda no grafo, Chama recursivamente] ;Sequencia Normal
+    [(nondeterministic? (car (programapdl program1))) 
+    Pega o caminho da esquerda chama recursivo, volta no backtracking chama o da direita recursivo, 
+    anda no grafo] ;Escolha nao deterministica
     [interação? Fazer algo] ;Caso da interação
-    ['() (FUNCAO QUE TESTA SE TODAS AS ARESTAS FORAM PERCORRIDAS) #t] ; caso que o grafo terminou e o programa também.
+    ['() (FUNCAO QUE TESTA SE TODAS AS ARESTAS FORAM PERCORRIDAS) #t] ; 
+    caso que o grafo terminou e o programa também.
     ['() #f] ; caso do programa terminar e o grafo nao 
     [_ #f] ;caso de o programa nao ter terminado mas o grafo sim
     )
