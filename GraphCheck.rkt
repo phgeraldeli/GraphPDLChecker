@@ -111,6 +111,12 @@
          (tem-aresta-vertice? (cdr rel) dest))
   )
 )
+(define (relacoes-vertice g v)
+  (relacoes-vertice-rec g (vertices g) v))
+
+(define (relacoes-vertice-rec grafo grafo-vertices vertice-procurado)
+  (list-ref (relacoes grafo) (index-vertice-rec grafo-vertices vertice-procurado)))
+
 
 (define (todas-arestas-percorridas? rel)
   (cond
