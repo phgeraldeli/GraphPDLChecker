@@ -10,11 +10,11 @@
 (define (relacoes grafo)
   (graph-body-R grafo))
 
-(define (mostrarvertices grafo)
+(define (mostrar-vertices grafo)
   (println "Vertices do grafo")
-  (mostrarverticesrec (vertices grafo)))
+  (mostrar-vertices-rec (vertices grafo)))
 
-(define (mostrarverticesrec vertices) ;printa vertices recursivamente
+(define (mostrar-vertices-rec vertices) ;printa vertices recursivamente
   (write (car vertices))
   (if (equal? '() (cdr vertices))
       (values)
@@ -22,50 +22,50 @@
   )
   (if (equal? '() (cdr vertices))
       (values)
-      (mostrarverticesrec (cdr vertices))
+      (mostrar-vertices-rec (cdr vertices))
   )
 )
    
-;(define (checarVertice vertice relacoes programa))
+;(define (checar-vertice vertice relacoes programa))
 
-(define (mostrarrelacoes grafo)
+(define (mostrar-relacoes grafo)
   (println "Relações do grafo")
-  (mostrarrelacoesrec (vertices grafo) (relacoes grafo)))
+  (mostrar-relacoes-rec (vertices grafo) (relacoes grafo)))
 
 ;printa relacoes de um vertice
 
-(define (mostrarrelacoesrec vertices relacoes)
+(define (mostrar-relacoes-rec vertices relacoes)
   (display "\n")
   (write (car vertices))
   (display ":=")
   (if (equal? '() (car relacoes))
       (values)
-      (mostrarrelacoesdeumvertice (car relacoes)))
+      (mostrar-relacoes-de-um-vertice (car relacoes)))
   (if (equal? '() (cdr vertices))
       (values)
-      (mostrarrelacoesrec (cdr vertices) (cdr relacoes))))
+      (mostrar-relacoes-rec (cdr vertices) (cdr relacoes))))
   
-(define (mostrarrelacoesdeumvertice relvertice) ;auxiliar da função acima
+(define (mostrar-relacoes-de-um-vertice rel-vertice) ;auxiliar da função acima
   ;(write relvertice)
-  (write (car relvertice))
+  (write (car rel-vertice))
   (write "->")
-  (write (car (cdr (car relvertice))))
+  (write (car (cdr (car rel-vertice))))
   (display " / ")
-  (if (equal? '() (cdr relvertice))
+  (if (equal? '() (cdr rel-vertice))
       (values)
-      (mostrarrelacoesdeumvertice (cdr relvertice))))
+      (mostrar-relacoes-de-um-vertice (cdr rel-vertice))))
 
 
 
 ; Retorna #t se o grafo g possui o vertice v
 (define (tem-vertice? g v) ;função auxiliar para diminuir o tamanho da chamada
-  (verticerec? (vertices g) v))
-(define (verticerec? gv vp)  ;chamada (verticered (vertices g) 'VERTICE)
+  (vertice-rec? (vertices g) v))
+(define (vertice-rec? gv vp)  ;chamada (verticered (vertices g) 'VERTICE)
   (if (equal? '() gv)
       #f
       (if (equal? vp (car gv))
           #t
-          (verticerec? (cdr gv) vp))))
+          (vertice-rec? (cdr gv) vp))))
 
 (define (index-vertice g vp)         ;retorna o indice do vertice procurado, e -inf caso nao exista
   (index-vertice-rec (vertices g) vp))
@@ -118,23 +118,23 @@
 
 (struct PDL (program))
 
-(define (programapdl prog)
+(define (programa-pdl prog)
   (PDL-program prog))
 
 (struct sequential (prog))
 (define (seqprog seq)
   (sequential-prog seq))
-(struct nondeterministic (progA progB))
+(struct non-deterministic (progA progB))
 (struct iteration (prog))
   
-(define (validgraph program g)
+(define (valid-graph program g)
   
-  (if (sequential? (car (programapdl program1)))
+  (if (sequential? (car (programa-pdl program1)))
       #t
       #f
       ))
 
-(define nd1 (nondeterministic 'B 'C))
+(define nd1 (non-deterministic 'B 'C))
 (define seq1 (sequential nd1))
 (define seq2 (sequential 'B))
 (define program1 (PDL (list seq1 seq2)))
