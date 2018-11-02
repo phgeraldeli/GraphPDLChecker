@@ -96,7 +96,7 @@
 (define (tem-aresta-marcada-rec? g o d p)
   (if(tem-vertice? g o)
      (if(tem-vertice? g d)
-        (tem-aresta-marcada-vertice? (list-ref (relacoes grafo1) (index-vertice grafo1 o)) d p)
+        (tem-aresta-marcada-vertice? (list-ref (relacoes g) (index-vertice g o)) d p)
      #f)
    #f)
 )
@@ -109,6 +109,14 @@
               #t
               (tem-aresta-vertice? (cdr rel) dest))
          (tem-aresta-vertice? (cdr rel) dest))
+  )
+)
+
+(define (todas-arestas-percorridas? rel)
+  (match (car (car (car rel)))
+  [0 #f]
+  [1 (todas-arestas-percorridas? (cdr rel))]
+  [_ #t]
   )
 )
 
@@ -133,6 +141,8 @@
       #t
       #f
       ))
+
+
 
 #|Ideia de resolução
 (define (validgraph program g)
@@ -160,7 +170,7 @@
                             (list
                              '((0 alfa B))
                              '((0 alfa B) (0 beta C))
-                             '()
+                             '(0)
                              )
                )
 )
