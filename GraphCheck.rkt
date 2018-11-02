@@ -152,12 +152,13 @@
 (struct non-deterministic (progA progB))
 (struct iteration (prog))
   
-(define (valid-graph program g)
-  
-  (if (sequential? (car (programa-pdl program1)))
-      #t
-      #f
-      ))
+(define (valid-graph pdl g)
+  (valid-graph-aux (programa-pdl) g (car (vertices g))))
+
+(define (valid-graph-aux program grafo vertice)
+  (cond
+    [(equal? program '()) (cond
+                            [])]))
 
 
 
