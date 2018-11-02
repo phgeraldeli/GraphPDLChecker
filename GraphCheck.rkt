@@ -113,11 +113,25 @@
 )
 
 (define (todas-arestas-percorridas? rel)
-  (match (car (car (car rel)))
-  [0 #f]
-  [1 (todas-arestas-percorridas? (cdr rel))]
-  [_ #t]
+  (if (equal? '() rel)
+      #t
+      (if (equal? (car rel) '())
+          (todas-arestas-percorridas? (cdr rel))
+          (if (equal? #t (todas-arestas-perc-verticeespecifico? (car rel)))
+              (todas-arestas-percorridas? (cdr rel))
+              #f
+          )
+      )
   )
+)
+(define (todas-arestas-perc-verticeespecifico? relVert)
+  (match relVert
+    ['() #t]
+    [_ (match (car (car relVert))
+         [0 #f]
+         [1 (todas-arestas-perc-verticeespecifico? (cdr relVert))]
+         )]
+    )
 )
 
 ;(struct graph-body (W R))
@@ -168,8 +182,8 @@
 ;(struct graph-body (W R))
 (define grafo1 ( graph-body (list 'A 'B 'C) #| Vertices |#
                             (list
-                             '((0 alfa B))
-                             '((0 alfa B) (0 beta C))
+                             '((1 alfa B))
+                             '((1 alfa B) (0 beta C))
                              '()
                              )
                )
