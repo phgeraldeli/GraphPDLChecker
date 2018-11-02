@@ -113,23 +113,20 @@
 )
 
 (define (todas-arestas-percorridas? rel)
-  (if (equal? '() rel)
-      #t
-      (if (equal? (car rel) '())
-          (todas-arestas-percorridas? (cdr rel))
-          (if (equal? #t (todas-arestas-perc-verticeespecifico? (car rel)))
-              (todas-arestas-percorridas? (cdr rel))
-              #f
-          )
-      )
+  (cond
+    [(equal? '() rel) #t] 
+    [(equal? (car rel) '()) (todas-arestas-percorridas? (cdr rel))]
+    [(todas-arestas-perc-vertice-especifico? (car rel)) (todas-arestas-percorridas? (cdr rel))]
+    [else #f]
+    )
   )
-)
-(define (todas-arestas-perc-verticeespecifico? relVert)
-  (match relVert
+
+(define (todas-arestas-perc-vertice-especifico? rel-vert)
+  (match rel-vert
     ['() #t]
-    [_ (match (car (car relVert))
+    [_ (match (car (car rel-vert))
          [0 #f]
-         [1 (todas-arestas-perc-verticeespecifico? (cdr relVert))]
+         [1 (todas-arestas-perc-vertice-especifico? (cdr rel-vert))]
          )]
     )
 )
