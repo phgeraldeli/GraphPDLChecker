@@ -1,1 +1,0 @@
-((list 'alfa (list (list 'a 'b) (list 'b 'a)) 'beta (list 'a 'b)))
