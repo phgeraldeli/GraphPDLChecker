@@ -134,6 +134,19 @@
       #f
       ))
 
+#|Ideia de resolução
+(define (validgraph program g)
+  (match program
+    [(sequential? (car (programapdl program1)))   Anda no programa e anda no grafo, Chama recursivamente] ;Sequencia Normal
+    [(nondeterministic? (car (programapdl program1))) Pega o caminho da esquerda chama recursivo, volta no backtracking chama o da direita recursivo, anda no grafo] ;Escolha nao deterministica
+    [interação? Fazer algo] ;Caso da interação
+    ['() (FUNCAO QUE TESTA SE TODAS AS ARESTAS FORAM PERCORRIDAS) #t] ; caso que o grafo terminou e o programa também.
+    ['() #f] ; caso do programa terminar e o grafo nao 
+    [_ #f] ;caso de o programa nao ter terminado mas o grafo sim
+    )
+ )
+|#
+
 (define nd1 (non-deterministic 'B 'C))
 (define seq1 (sequential nd1))
 (define seq2 (sequential 'B))
@@ -151,25 +164,3 @@
                              )
                )
 )
-
-
-
-
-
-;percorre o PDL a partir da posicao atual retornando o bloco daquela posicao.
-
-;(define (percorrerPDL program posAtual))
-
-;Problema no equal, não está restornando true nas funções: tem-vertice tem-aresta tem-arestamarcada
-#|
-(define (run grafo program)
-  (for ([i (vertices grafo)])
-    (println i)
-    (println (list-ref (relacoes grafo) (index-of (vertices grafo) i))
-    (checarrelacoes i (list-ref (relacoes grafo) (index-of (vertices grafo) i) program))))
-|#
-
-
-
-;(define g (weighted-graph/directed '((alfa A B) (beta A B) (alfa B B) (beta B C))))
-;(edge-weight g 'A 'B)
