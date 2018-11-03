@@ -202,7 +202,7 @@
 
   
 (define (valid-graph pdl g)
-  (valid-graph-aux (car pdl) (cdr pdl) g (car (vertices g))))
+  (valid-graph-aux (car pdl) pdl g (car (vertices g))))
 
 
 (define nd1 (non-deterministic (list 'B 'C)))
@@ -214,21 +214,23 @@
 (define atomicB (atomic 'B))
 ;(define (index-arestas grafo vertice-origem programa-aresta)
 (define (valid-graph-aux passo-atual resto-do-program grafo vertice)
+  (println "entrou")
   (cond
     [(equal? resto-do-program '()) (todas-arestas-perc-vertice-especifico? (relacoes-vertice grafo vertice))]
-    [(todas-arestas-perc-vertice-especifico? vertice) #f]
+    [(todas-arestas-perc-vertice-especifico? (relacoes-vertice grafo vertice))  #f]
     [(match passo-atual
       [atomic? (atomic-aux (index-arestas grafo vertice (atom passo-atual)) resto-do-program grafo vertice)]
-      [_ #f])]
+      [_ (println "F")])]
     [else #f]
     )
   )
 ;(define (grafo-mudado grafo vertice indice-aresta programa destino cor)
 ;(define (destino-aresta grafo vertice indice-aresta)
 (define (atomic-aux lista-arestas programa grafo vertice)
+  (println "ATOMIC AUX")
   (cond
     [equal? (cdr lista-arestas) '()
-      (if (valid-graph-aux (car programa) (cdr programa) (grafo-mudado grafo vertice (car lista-arestas) programa (destino-aresta grafo vertice (car lista-arestas)) 1))
+      (if (valid-graph-aux (car programa) programa (grafo-mudado grafo vertice (car lista-arestas) programa (destino-aresta grafo vertice (car lista-arestas)) 1) (destino-aresta grafo vertice (car lista-arestas)))
           #t
           #f
       )]
@@ -247,7 +249,7 @@
                            )
   )
 (define entrada (list (atomic 'alfa)))
-
+(valid-graph entrada grafo2)
 (define grafo1 ( graph-body (list 'A 'B 'C) #| Vertices |#
                             (list
                              '((1 alfa B))
