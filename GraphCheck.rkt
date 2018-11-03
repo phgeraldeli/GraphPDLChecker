@@ -214,6 +214,7 @@
 (define atomicB (atomic 'B))
 ;(define (index-arestas grafo vertice-origem programa-aresta)
 (define (valid-graph-aux passo-atual programa grafo vertice)
+  (mostrar-relacoes grafo)
   (println programa)
   (cond
     [(equal? programa '()) (todas-arestas-perc-vertice-especifico? (relacoes-vertice grafo vertice))]
@@ -227,17 +228,15 @@
 ;(define (grafo-mudado grafo vertice indice-aresta programa destino cor)
 ;(define (destino-aresta grafo vertice indice-aresta)
 (define (atomic-aux lista-arestas passo-atual programa grafo vertice)
-  (println "ATOMIC AUX")
-  (println lista-arestas)
   (cond
     [equal? (cdr lista-arestas) '()
-      (if (valid-graph-aux (car programa) (cdr programa) (grafo-mudado grafo vertice (car lista-arestas) passo-atual (destino-aresta grafo vertice (car lista-arestas)) 1) (destino-aresta grafo vertice (car lista-arestas)))
+      (if (valid-graph-aux (car programa) (cdr programa) (grafo-mudado grafo vertice (car lista-arestas) (atom passo-atual) (destino-aresta grafo vertice (car lista-arestas)) 1) (destino-aresta grafo vertice (car lista-arestas)))
           #t
           #f
       )]
-    [(valid-graph-aux (car programa) (cdr programa) (grafo-mudado grafo vertice (car lista-arestas) passo-atual (destino-aresta grafo vertice (car lista-arestas)) 1))
+    [(valid-graph-aux (car programa) (cdr programa) (grafo-mudado grafo vertice (car lista-arestas) (atom passo-atual) (destino-aresta grafo vertice (car lista-arestas)) 1))
           #t
-          (atomic-aux (cdr lista-arestas) programa grafo vertice)
+          (atomic-aux (cdr lista-arestas) passo-atual programa grafo vertice)
         ]
   )
  )
@@ -246,11 +245,11 @@
 (define grafo2 (graph-body (list 'A 'B)
                            (list
                             '((0 alfa B))
-                            '()
+                            '((0 alfa A))
                             )
                            )
   )
-(define entrada (list (atomic 'alfa)))
+(define entrada (list (atomic 'alfa) (atomic 'alfa) (atomic 'alfa)))
 (valid-graph entrada grafo2)
 (define grafo1 ( graph-body (list 'A 'B 'C) #| Vertices |#
                             (list
