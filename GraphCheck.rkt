@@ -1,6 +1,6 @@
 #lang racket
 (struct graph-body (W R))
-
+(require racket/match)
 ; Estrutura do grafo será vertices(Nome, "visitado") e relações (transição, destino)
                             #| (relacoes de A)      (relacoes de B)                (relacoes de C)|#
 #|vertices é uma lista de listas, sendo cada lista uma um vertice e seu estado de visitado|#
@@ -120,8 +120,10 @@
 (define (relacoes-vertice-rec grafo grafo-vertices vertice-procurado);auxiliar da função acima
   (list-ref (relacoes grafo) (indice-vertice-rec grafo-vertices vertice-procurado)))
 
-(define (index-arestas grafo vertice-origem programa-aresta);diz os indices das arestas de um vertice que usam o programa-aresta
+
+(define (index-arestas grafo vertice-origem programa-aresta);diz os indices das arestas de um vertice que usam o programa-aresta ()
   (index-arestas-aux (relacoes-vertice grafo vertice-origem) programa-aresta 0))
+
 
 (define (index-arestas-aux rel-vert programa-aresta n);auxiliar da função acima
   (if (equal? '() rel-vert)
@@ -140,6 +142,7 @@
      (cdr lista)
      (cons (car lista) (remove-elemento (cdr lista) (- indice 1)))))
 
+
 (define (grafo-mudado grafo vertice indice-aresta programa destino cor)
   (graph-body (vertices grafo) (grafo-mudado-arestas-aux grafo (relacoes grafo) vertice (indice-vertice grafo vertice) indice-aresta programa destino cor)))
 
@@ -154,7 +157,7 @@
   (cons (list cor programa destino) (remove-elemento relacoes-vertice indice-aresta)))
 
 
-                                (define (todas-arestas-percorridas? rel)
+(define (todas-arestas-percorridas? rel)
   (cond
     [(equal? '() rel) #t] 
     [(equal? (car rel) '()) (todas-arestas-percorridas? (cdr rel))]
@@ -164,6 +167,7 @@
   )
 
 (define (todas-arestas-perc-vertice-especifico? rel-vert)
+  ;(println rel-vert)
   (match rel-vert
     ['() #t]
     [_ (match (car (car rel-vert))
@@ -183,47 +187,67 @@
   (PDL-program prog))
 
 (struct sequential (prog))
+
 (define (seqprog seq)
   (sequential-prog seq))
-(struct non-deterministic (progA progB))
+
+(struct non-deterministic (lista))
+
 (struct iteration (prog))
-#|  
+(struct atomic (prog))
+
+(define (atom atomic)
+  (atomic-prog atomic))
+
+
+  
 (define (valid-graph pdl g)
-  (valid-graph-aux (programa-pdl) g (car (vertices g))))|#
-#|
-(define (valid-graph-aux program grafo vertice)
-  (cond
-    [(equal? program '()) (cond
-                            [])]))
-|#
+  (valid-graph-aux (car pdl) (cdr pdl) g (car (vertices g))))
 
 
-#|Ideia de resolução
-(define (validgraph program g)
-  (match program
-    [(sequential? (car (programapdl program1)))   
-    Anda no programa e anda no grafo, Chama recursivamente] ;Sequencia Normal
-    [(nondeterministic? (car (programapdl program1))) 
-    Pega o caminho da esquerda chama recursivo, volta no backtracking chama o da direita recursivo, 
-    anda no grafo] ;Escolha nao deterministica
-    [interação? Fazer algo] ;Caso da interação
-    ['() (FUNCAO QUE TESTA SE TODAS AS ARESTAS FORAM PERCORRIDAS) #t] ; 
-    caso que o grafo terminou e o programa também.
-    ['() #f] ; caso do programa terminar e o grafo nao 
-    [_ #f] ;caso de o programa nao ter terminado mas o grafo sim
-    )
- )
-|#
-
-(define nd1 (non-deterministic 'B 'C))
+(define nd1 (non-deterministic (list 'B 'C)))
 (define seq1 (sequential nd1))
 (define seq2 (sequential 'B))
 (define program1 (PDL (list seq1 seq2)))
 
+(define atomicA (atomic 'A))
+(define atomicB (atomic 'B))
+;(define (index-arestas grafo vertice-origem programa-aresta)
+(define (valid-graph-aux passo-atual resto-do-program grafo vertice)
+  (cond
+    [(equal? resto-do-program '()) (todas-arestas-perc-vertice-especifico? (relacoes-vertice grafo vertice))]
+    [(todas-arestas-perc-vertice-especifico? vertice) #f]
+    [(match passo-atual
+      [atomic? (atomic-aux (index-arestas grafo vertice (atom passo-atual)) resto-do-program grafo vertice)]
+      [_ #f])]
+    [else #f]
+    )
+  )
+;(define (grafo-mudado grafo vertice indice-aresta programa destino cor)
+;(define (destino-aresta grafo vertice indice-aresta)
+(define (atomic-aux lista-arestas programa grafo vertice)
+  (cond
+    [equal? (cdr lista-arestas) '()
+      (if (valid-graph-aux (car programa) (cdr programa) (grafo-mudado grafo vertice (car lista-arestas) programa (destino-aresta grafo vertice (car lista-arestas)) 1))
+          #t
+          #f
+      )]
+    [(valid-graph-aux (car programa) (cdr programa) (grafo-mudado grafo vertice (car lista-arestas) programa (destino-aresta grafo vertice (car lista-arestas)) 1))
+          #t
+          (atomic-aux (cdr lista-arestas) programa grafo vertice)
+        ]
+  )
+ )
+  
 
+(define grafo2 (graph-body (list 'A 'B)
+                           (list
+                            '((0 alfa B))
+                            )
+                           )
+  )
+(define entrada (list (atomic 'alfa)))
 
-;"main"
-;(struct graph-body (W R))
 (define grafo1 ( graph-body (list 'A 'B 'C) #| Vertices |#
                             (list
                              '((1 alfa B))
