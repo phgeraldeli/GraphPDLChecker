@@ -70,21 +70,21 @@
           #t
           (vertice-rec? (cdr gv) vp))))
 
-(define (index-vertice g vp)         ;retorna o indice do vertice procurado, e -inf caso nao exista
-  (index-vertice-rec (vertices g) vp))
-(define (index-vertice-rec gv vp)
+(define (indice-vertice g vp)         ;retorna o indice do vertice procurado, e -inf caso nao exista
+  (indice-vertice-rec (vertices g) vp))
+(define (indice-vertice-rec gv vp)
   (if(equal? '() gv)
      -inf.f
      (if (equal? vp (car gv))
           0
-          (+ 1 (index-vertice-rec (cdr gv) vp)))))
+          (+ 1 (indice-vertice-rec (cdr gv) vp)))))
 
   
 ; Retorna #t se o grafo g possui uma aresta do vertice o para o vertice d 
 (define (tem-aresta-rec? g o d)
   (if(tem-vertice? g o)
      (if(tem-vertice? g d)
-        (tem-aresta-vertice? ( list-ref (relacoes g) (index-vertice g o)) d)
+        (tem-aresta-vertice? ( list-ref (relacoes g) (indice-vertice g o)) d)
      #f)
    #f)
 )
@@ -99,7 +99,7 @@
 (define (tem-aresta-marcada-rec? g o d p)
   (if(tem-vertice? g o)
      (if(tem-vertice? g d)
-        (tem-aresta-marcada-vertice? (list-ref (relacoes g) (index-vertice g o)) d p)
+        (tem-aresta-marcada-vertice? (list-ref (relacoes g) (indice-vertice g o)) d p)
      #f)
    #f)
 )
@@ -118,7 +118,7 @@
   (relacoes-vertice-rec g (vertices g) v))
 
 (define (relacoes-vertice-rec grafo grafo-vertices vertice-procurado);auxiliar da função acima
-  (list-ref (relacoes grafo) (index-vertice-rec grafo-vertices vertice-procurado)))
+  (list-ref (relacoes grafo) (indice-vertice-rec grafo-vertices vertice-procurado)))
 
 (define (index-arestas grafo vertice-origem programa-aresta);diz os indices das arestas de um vertice que usam o programa-aresta
   (index-arestas-aux (relacoes-vertice grafo vertice-origem) programa-aresta 0))
@@ -140,7 +140,21 @@
      (cdr lista)
      (cons (car lista) (remove-elemento (cdr lista) (- indice 1)))))
 
-(define (todas-arestas-percorridas? rel)
+(define (grafo-mudado grafo vertice indice-aresta programa destino cor)
+  (graph-body (vertices grafo) (grafo-mudado-arestas-aux grafo (relacoes grafo) vertice (indice-vertice grafo vertice) indice-aresta programa destino cor)))
+
+(define (grafo-mudado-arestas-aux grafo relacoes-grafo vertice indice-vertice indice-aresta programa destino cor)
+  (if (equal? 0 indice-vertice)
+      (cons (grafo-mudado-arestas-vertice-aux (relacoes-vertice grafo vertice) indice-aresta programa destino cor) (cdr relacoes-grafo))
+      (cons (car relacoes-grafo) (grafo-mudado-arestas-aux grafo (cdr relacoes-grafo) vertice (- indice-vertice 1) indice-aresta programa destino cor))
+      )
+  )
+
+(define (grafo-mudado-arestas-vertice-aux relacoes-vertice indice-aresta programa destino cor)
+  (cons (list cor programa destino) (remove-elemento relacoes-vertice indice-aresta)))
+
+
+                                (define (todas-arestas-percorridas? rel)
   (cond
     [(equal? '() rel) #t] 
     [(equal? (car rel) '()) (todas-arestas-percorridas? (cdr rel))]
