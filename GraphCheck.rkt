@@ -186,17 +186,17 @@
 (define (programa-pdl prog)
   (PDL-program prog))
 
-(struct sequential (prog))
+(struct sequential (prog)#:transparent)
 
 (define (seqprog seq)
   (sequential-prog seq))
 
-(struct non-deterministic (lista))
+(struct non-deterministic (lista)#:transparent)
 
-(struct iteration (prog))
-(struct atomic (prog))
+(struct iteration (prog)#:transparent)
+(struct atomic (prog)#:transparent)
 
-(define (atom atomic)
+(define (atom atomic) 
   (atomic-prog atomic))
 
 
@@ -213,28 +213,29 @@
 (define atomicA (atomic 'A))
 (define atomicB (atomic 'B))
 ;(define (index-arestas grafo vertice-origem programa-aresta)
-(define (valid-graph-aux passo-atual resto-do-program grafo vertice)
-  (println "entrou")
+(define (valid-graph-aux passo-atual programa grafo vertice)
+  (println programa)
   (cond
-    [(equal? resto-do-program '()) (todas-arestas-perc-vertice-especifico? (relacoes-vertice grafo vertice))]
+    [(equal? programa '()) (todas-arestas-perc-vertice-especifico? (relacoes-vertice grafo vertice))]
     [(todas-arestas-perc-vertice-especifico? (relacoes-vertice grafo vertice))  #f]
     [(match passo-atual
-      [atomic? (atomic-aux (index-arestas grafo vertice (atom passo-atual)) resto-do-program grafo vertice)]
-      [_ (println "F")])]
+      [atomic? (atomic-aux (index-arestas grafo vertice (atom passo-atual)) passo-atual programa grafo vertice)]
+      [_ #f])]
     [else #f]
     )
   )
 ;(define (grafo-mudado grafo vertice indice-aresta programa destino cor)
 ;(define (destino-aresta grafo vertice indice-aresta)
-(define (atomic-aux lista-arestas programa grafo vertice)
+(define (atomic-aux lista-arestas passo-atual programa grafo vertice)
   (println "ATOMIC AUX")
+  (println lista-arestas)
   (cond
     [equal? (cdr lista-arestas) '()
-      (if (valid-graph-aux (car programa) programa (grafo-mudado grafo vertice (car lista-arestas) programa (destino-aresta grafo vertice (car lista-arestas)) 1) (destino-aresta grafo vertice (car lista-arestas)))
+      (if (valid-graph-aux (car programa) (cdr programa) (grafo-mudado grafo vertice (car lista-arestas) passo-atual (destino-aresta grafo vertice (car lista-arestas)) 1) (destino-aresta grafo vertice (car lista-arestas)))
           #t
           #f
       )]
-    [(valid-graph-aux (car programa) (cdr programa) (grafo-mudado grafo vertice (car lista-arestas) programa (destino-aresta grafo vertice (car lista-arestas)) 1))
+    [(valid-graph-aux (car programa) (cdr programa) (grafo-mudado grafo vertice (car lista-arestas) passo-atual (destino-aresta grafo vertice (car lista-arestas)) 1))
           #t
           (atomic-aux (cdr lista-arestas) programa grafo vertice)
         ]
