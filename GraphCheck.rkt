@@ -245,6 +245,7 @@
 (define grafo2 (graph-body (list 'A 'B)
                            (list
                             '((0 alfa B))
+                            '()
                             )
                            )
   )
