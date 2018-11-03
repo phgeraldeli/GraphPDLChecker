@@ -1,10 +1,12 @@
 #lang racket
 (struct graph-body (W R))
+
 ; Estrutura do grafo será vertices(Nome, "visitado") e relações (transição, destino)
                             #| (relacoes de A)      (relacoes de B)                (relacoes de C)|#
 #|vertices é uma lista de listas, sendo cada lista uma um vertice e seu estado de visitado|#
 #|relacoes é uma lista de listas de listas, sendo cada lista as relacoes de um vertice,
  e a relacao uma lista com "transição, destino" |#
+
 (define (vertices grafo)
   (graph-body-W grafo))
 
@@ -112,12 +114,31 @@
          (tem-aresta-vertice? (cdr rel) dest))
   )
 )
-(define (relacoes-vertice g v)
+(define (relacoes-vertice g v);pega relações de um vertice especifico
   (relacoes-vertice-rec g (vertices g) v))
 
-(define (relacoes-vertice-rec grafo grafo-vertices vertice-procurado)
+(define (relacoes-vertice-rec grafo grafo-vertices vertice-procurado);auxiliar da função acima
   (list-ref (relacoes grafo) (index-vertice-rec grafo-vertices vertice-procurado)))
 
+(define (index-arestas grafo vertice-origem programa-aresta);diz os indices das arestas de um vertice que usam o programa-aresta
+  (index-arestas-aux (relacoes-vertice grafo vertice-origem) programa-aresta 0))
+
+(define (index-arestas-aux rel-vert programa-aresta n);auxiliar da função acima
+  (if (equal? '() rel-vert)
+      '()
+      (if (equal? (car (cdr (car rel-vert))) programa-aresta)
+          (cons n (index-arestas-aux (cdr rel-vert) programa-aresta (+ n 1)))
+          (index-arestas-aux (cdr rel-vert) programa-aresta (+ n 1)))))
+
+(define (destino-aresta grafo vertice indice-aresta) ;retorna vertice Destino quando saimos do grafo com aresta do indice
+  (if (equal? '() (relacoes-vertice grafo vertice))
+      #f
+      (car (cdr (cdr (list-ref (relacoes-vertice grafo vertice) indice-aresta))))))
+
+(define (remove-elemento lista indice) ;função para remoção de uma aresta utilizada, para poder colocar nova aresta pintada
+  (if(equal? indice 0)
+     (cdr lista)
+     (cons (car lista) (remove-elemento (cdr lista) (- indice 1)))))
 
 (define (todas-arestas-percorridas? rel)
   (cond
@@ -152,9 +173,9 @@
   (sequential-prog seq))
 (struct non-deterministic (progA progB))
 (struct iteration (prog))
-  
+#|  
 (define (valid-graph pdl g)
-  (valid-graph-aux (programa-pdl) g (car (vertices g))))
+  (valid-graph-aux (programa-pdl) g (car (vertices g))))|#
 #|
 (define (valid-graph-aux program grafo vertice)
   (cond
@@ -192,7 +213,7 @@
 (define grafo1 ( graph-body (list 'A 'B 'C) #| Vertices |#
                             (list
                              '((1 alfa B))
-                             '((1 alfa B) (0 beta C))
+                             '((1 alfa B) (0 beta C) (0 beta A))
                              '()
                              )
                )
