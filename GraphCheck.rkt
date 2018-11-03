@@ -228,6 +228,7 @@
 ;(define (grafo-mudado grafo vertice indice-aresta programa destino cor)
 ;(define (destino-aresta grafo vertice indice-aresta)
 (define (atomic-aux lista-arestas passo-atual programa grafo vertice)
+  (println lista-arestas)
   (cond
     [equal? (cdr lista-arestas) '()
       (if (valid-graph-aux (car programa) (cdr programa) (grafo-mudado grafo vertice (car lista-arestas) (atom passo-atual) (destino-aresta grafo vertice (car lista-arestas)) 1) (destino-aresta grafo vertice (car lista-arestas)))
