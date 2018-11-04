@@ -1,0 +1,1 @@
+grafo: A-alfa->A          programa: alfa;alfa (resolver a flag)
