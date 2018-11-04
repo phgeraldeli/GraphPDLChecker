@@ -218,7 +218,7 @@
   (println programa)
   (cond
     [(equal? programa '()) (todas-arestas-perc-vertice-especifico? (relacoes-vertice grafo vertice))]
-    [(todas-arestas-perc-vertice-especifico? (relacoes-vertice grafo vertice))  #f]
+    ;[(todas-arestas-perc-vertice-especifico? (relacoes-vertice grafo vertice))  #f]
     [(match passo-atual
       [atomic? (atomic-aux (index-arestas grafo vertice (atom passo-atual)) passo-atual programa grafo vertice)]
       [_ #f])]
