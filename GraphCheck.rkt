@@ -246,12 +246,13 @@
    [non-deterministic? (or (existe-caminho? grafo vertice-atual (car (list-nd passo-atual)))
                            (existe-caminho? grafo vertice-atual (car (cdr (list-nd passo-atual)))))]
     
-   [sequential? (if (existe-caminho? grafo vertice-atual (car (seqprog passo-atual)))
-                    (#t ;caso-existe-caminho inicial
-                     )
+   [sequential? (
+                 (if (existe-caminho? grafo vertice-atual (car (seqprog passo-atual)))
+                    (existe-caminho-sequential-aux grafo (index-arestas grafo vertice-atual passo-atual)) ;caso-existe-caminho inicial
                     (#f ;se não existe caminho pra primeira parte da sequencia nao precisa testar o resto
                      )
                   )
+                 )
                 ]
     )
     
