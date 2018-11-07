@@ -210,61 +210,22 @@
 (define atomicB (atomic 'B))
 ;(define (index-arestas grafo vertice-origem programa-aresta)
 
+
 (define (valid-graph pdl g)
-  (valid-graph-aux (car pdl) pdl g (car (vertices g))))
+  (valid-graph-aux pdl (list g (car (vertices g)))))
 
-(define (valid-graph-aux passo-atual programa grafo vertice)
-  (mostrar-relacoes grafo)
-  (println programa)
-  (cond
-    [(equal? programa '()) (todas-arestas-perc-vertice-especifico? (relacoes-vertice grafo vertice))]
-    ;[(todas-arestas-perc-vertice-especifico? (relacoes-vertice grafo vertice))  #f]
-    [(match passo-atual
-      [atomic? (atomic-aux (index-arestas grafo vertice (atom passo-atual)) passo-atual programa grafo vertice)]
-      [_ #f])]
-    [else #f]
-    )
-  )
+(define (valid-graph-aux pdl lista-grafos-vertices)
+  
 
- (define (atomic-aux lista-arestas passo-atual programa grafo vertice)
-  (println lista-arestas)
-  (cond
-    [equal? (cdr lista-arestas) '()
-      (if (valid-graph-aux (car programa) (cdr programa) (grafo-mudado grafo vertice (car lista-arestas) (atom passo-atual) (destino-aresta grafo vertice (car lista-arestas)) 1) (destino-aresta grafo vertice (car lista-arestas)))
-          #t
-          #f
-      )]
-    [(valid-graph-aux (car programa) (cdr programa) (grafo-mudado grafo vertice (car lista-arestas) (atom passo-atual) (destino-aresta grafo vertice (car lista-arestas)) 1))
-          #t
-          (atomic-aux (cdr lista-arestas) passo-atual programa grafo vertice)
-        ]
-  )
- )
-(define (existe-caminho? grafo vertice-atual passo-atual)
-  (match passo-atual
-   [atomic? (equal? #f (equal? '() (index-arestas grafo vertice-atual (atom passo-atual))))]
-   [non-deterministic? (or (existe-caminho? grafo vertice-atual (car (list-nd passo-atual)))
-                           (existe-caminho? grafo vertice-atual (car (cdr (list-nd passo-atual)))))]
-    
-   [sequential? (
-                 (if (existe-caminho? grafo vertice-atual (car (seqprog passo-atual)))
-                    (existe-caminho-sequential-aux grafo (index-arestas grafo vertice-atual passo-atual)) ;caso-existe-caminho inicial
-                    (#f ;se não existe caminho pra primeira parte da sequencia nao precisa testar o resto
-                     )
-                  )
-                 )
-                ]
-    )
-    
-  )
-    
-(define (existe-caminho-sequential-aux grafo lista-vertices passo-atual)
-  (cond
-   [(equal? (cdr lista-vertices) '()) (existe-caminho? grafo (car lista-vertices) passo-atual)]
-   [else (or (existe-caminho? grafo (car lista-vertices) passo-atual))]
-   )
-  )
 
+(define (atomic-prog-exec grafo lista-arestas prog-atomico vertice)
+  (if (equal? lista-arestas '()) ;(lista-arestas '()
+            '()
+            (cons(list (grafo-mudado grafo vertice (car lista-arestas) (atom prog-atomico) (destino-aresta grafo vertice (car lista-arestas)) 1) (destino-aresta grafo vertice (car lista-arestas))) (atomic-prog-exec grafo (cdr lista-arestas) prog-atomico vertice))
+            )
+  )
+            
+               
 (define grafo2 (graph-body (list 'A 'B)
                            (list
                             '((0 alfa B))
@@ -272,8 +233,9 @@
                             )
                            )
   )
+
 (define entrada (list (atomic 'alfa) (atomic 'alfa) (atomic 'alfa)))
-(valid-graph entrada grafo2)
+;(valid-graph entrada grafo2)
 (define grafo1 ( graph-body (list 'A 'B 'C) #| Vertices |#
                             (list
                              '((1 alfa B))
