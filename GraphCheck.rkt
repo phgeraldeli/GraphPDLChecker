@@ -240,7 +240,7 @@
    (println vertice)
   (if (equal? lista-arestas '()) ;(lista-arestas '()
             '()
-            (cons(list (grafo-mudado grafo vertice (car lista-arestas) prog-atomico (destino-aresta grafo vertice (car lista-arestas)) 1) (destino-aresta grafo vertice (car lista-arestas))) (atomic-prog-exec grafo (cdr lista-arestas) prog-atomico vertice))
+            (cons(list (grafo-mudado grafo vertice (car lista-arestas) prog-atomico (destino-aresta grafo vertice (car lista-arestas)) 1) (list (destino-aresta grafo vertice (car lista-arestas)))) (atomic-prog-exec grafo (cdr lista-arestas) prog-atomico vertice))
             )
   )
             
