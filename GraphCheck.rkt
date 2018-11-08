@@ -211,17 +211,36 @@
 ;(define (index-arestas grafo vertice-origem programa-aresta)
 
 
-(define (valid-graph pdl g)
-  (valid-graph-aux pdl (list g (car (vertices g)))))
+;(define (valid-graph pdl g)
+; (valid-graph-aux pdl (list g (car (vertices g)))))
 
-(define (valid-graph-aux pdl lista-grafos-vertices)
-  
+#|(define (valid-graph-aux pdl lista-grafos-vertices)
+  (match pdl
+    [atomic? 
+|#
 
+(define (atomic-prog-graphs prog-atomico grafoverts)
+  (if (equal? grafoverts '())
+      '()
+      (append (atomic-prog-verts prog-atomico (car grafoverts))
+              (atomic-prog-graphs prog-atomico (cdr grafoverts)))
+      )
+  )
 
-(define (atomic-prog-exec grafo lista-arestas prog-atomico vertice)
+(define (atomic-prog-verts prog-atomico grafoverts)
+  (println grafoverts)
+  (if (equal? (car (cdr grafoverts)) '())
+      '()
+      (append (atomic-prog-exec (car grafoverts) (index-arestas (car grafoverts) (car (car (cdr grafoverts))) (atom prog-atomico)) (atom prog-atomico) (car (car (cdr grafoverts))))
+              (atomic-prog-verts prog-atomico (list (car grafoverts) (cdr (cdr grafoverts)))))
+      )
+)
+                                                    ;(define (index-arestas grafo vertice-origem programa-aresta) 
+ (define (atomic-prog-exec grafo lista-arestas prog-atomico vertice)
+   (println vertice)
   (if (equal? lista-arestas '()) ;(lista-arestas '()
             '()
-            (cons(list (grafo-mudado grafo vertice (car lista-arestas) (atom prog-atomico) (destino-aresta grafo vertice (car lista-arestas)) 1) (destino-aresta grafo vertice (car lista-arestas))) (atomic-prog-exec grafo (cdr lista-arestas) prog-atomico vertice))
+            (cons(list (grafo-mudado grafo vertice (car lista-arestas) prog-atomico (destino-aresta grafo vertice (car lista-arestas)) 1) (destino-aresta grafo vertice (car lista-arestas))) (atomic-prog-exec grafo (cdr lista-arestas) prog-atomico vertice))
             )
   )
             
