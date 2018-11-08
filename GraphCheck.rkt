@@ -279,10 +279,6 @@
       )
 )
 
-(define (merge grafoverts)
-  (if (equal? grafoverts '())
-      '()
-      (car (car grafoverts))))
 
 
 (define (non-deterministic-graph nd1 nd2 grafoverts)
@@ -331,3 +327,35 @@
                              )
                )
   )
+
+
+
+(define teste (list (list (graph-body '(A B C) '(((0 alfa B)) ((1 alfa C) (0 beta C) (0 beta A)) ())) '(C))
+                    (list (graph-body '(A B C) '(((1 alfa B)) ((0 alfa C) (1 beta C) (0 beta A)) ())) '(B))))
+
+(define (merge grafo-verts)
+  (if (equal? grafo-verts '())
+      '()
+      (list (graph-body (vertices (car (car grafo-verts)))
+                        (junta-cor (relacoes (car (car grafo-verts))) (relacoes (car (car (cdr grafo-verts))))))
+                        (remove-duplicates (append (car (cdr (car grafo-verts))) (car (cdr (car (cdr grafo-verts))))))
+             )
+      )
+  )
+
+; junta as cores dado duas relacoes
+(define (junta-cor rel1 rel2)
+  (if (equal? '() rel2)
+      rel1
+      (map (λ (x y) (if (equal? '() x)
+                    '()
+                    (map (λ (a b) (if (> (car a) (car b))
+                         (list (car a) (car (cdr a)) (car (cdr (cdr a))))
+                         (list (car b) (car (cdr b)) (car (cdr (cdr b)))) )) x y))) rel1 rel2)
+      )
+  )
+
+(define rel1 '( ((0 alfa B)) ((1 alfa C) (0 beta C) (0 beta A)) ()))
+(define rel2 '( ((1 alfa B)) ((0 alfa C) (1 beta C) (0 beta A)) ()))
+
+(define teste3 (list rel1 rel2))
