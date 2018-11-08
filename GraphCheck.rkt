@@ -231,7 +231,7 @@
     [atomic? 
 |#
 (define (prog-base prog grafoverts)
-  (println prog)
+  ;(println prog)
   (if (equal? grafoverts '())
       #f
       (if (atomic? prog)
@@ -253,7 +253,7 @@
     
 
 (define (atomic-prog-graphs prog-atomico grafoverts)
-  (println grafoverts)
+  ;(println grafoverts)
   (if (equal? grafoverts '())
       '()
       (append (atomic-prog-verts prog-atomico (car (car grafoverts)) (car (cdr (car grafoverts))))
@@ -282,15 +282,28 @@
 
 
 (define (non-deterministic-graph nd1 nd2 grafoverts)
-  (define exec1 (prog-base nd1))
-  (define exec2 (prog-base nd2))
-  (define NDMERG (merge exec1 exec2))
+  (define exec1 (prog-base nd1 grafoverts))
+  (println exec1)
+  (define exec2 (non-deterministic-graph-aux exec1 grafoverts nd2))
+  (define NDMERG (merge exec2))
   (if(equal? NDMERG '())
      '()
       NDMERG
       )
   )
-
+(define (non-deterministic-graph-aux exec1 grafoverts nd2)
+  (if (equal? exec1 '())
+      (prog-base nd2 grafoverts)
+      (prog-base nd2 (chaexec1
+                 )
+      )
+  )
+(define (change-final-vertex grafoverts vert)
+  (if (equal? grafoverts '())
+      '()
+      (cons (list (car (car grafoverts)) (list vert)) (change-final-vertex (cdr grafoverts) vert))
+      )
+  )
 (define (sequential-graph prog1 prog2 grafoverts)
   (define exec1 (prog-base prog1 grafoverts))
   (define exec2 (prog-base prog2 exec1))
@@ -299,7 +312,7 @@
 
 ;(define (index-arestas grafo vertice-origem programa-aresta) 
  (define (atomic-prog-exec grafo lista-arestas prog-atomico vertice)
-   (println vertice)
+   ;(println vertice)
   (if (equal? lista-arestas '()) ;(lista-arestas '()
             '()
             (cons(list (grafo-mudado grafo vertice (car lista-arestas) prog-atomico (destino-aresta grafo vertice (car lista-arestas)) 1)
@@ -319,15 +332,6 @@
 
 (define entrada (list (atomic 'alfa) (atomic 'alfa) (atomic 'alfa)))
 ;(valid-graph entrada grafo2)
-(define grafo1 ( graph-body (list 'A 'B 'C) #| Vertices |#
-                            (list
-                             '((0 alfa B))
-                             '((0 alfa C) (0 beta C) (0 beta A))
-                             '()
-                             )
-               )
-  )
-
 
 
 (define teste (list (list (graph-body '(A B C) '(((0 alfa B)) ((1 alfa C) (0 beta C) (0 beta A)) ())) '(C F K))
@@ -368,3 +372,11 @@
 (define rel2 '( ((1 alfa B)) ((0 alfa C) (1 beta C) (0 beta A)) ()))
 
 (define teste3 (list rel1 rel2))
+(define grafo1 ( graph-body (list 'A 'B 'C) #| Vertices |#
+                            (list
+                             '((0 alfa B))
+                             '((0 alfa C) (0 beta C) (0 beta A))
+                             '()
+                             )
+               )
+  )
