@@ -1,5 +1,5 @@
 #lang racket
-(struct graph-body (W R))
+(struct graph-body (W R)#:transparent)
 (require racket/match)
 ; Estrutura do grafo será vertices(Nome, "visitado") e relações (transição, destino)
                             #| (relacoes de A)      (relacoes de B)                (relacoes de C)|#
@@ -155,7 +155,11 @@
   )
 
 (define (grafo-mudado-arestas-vertice-aux relacoes-vertice indice-aresta programa destino cor)
-  (cons (list cor programa destino) (remove-elemento relacoes-vertice indice-aresta)))
+  (if (equal? relacoes-vertice '())
+      '()
+      (if (equal? indice-aresta 0)
+          (cons (list 1 programa destino) (cdr relacoes-vertice))
+          (cons (car relacoes-vertice) (grafo-mudado-arestas-vertice-aux (cdr relacoes-vertice) (- indice-aresta 1) programa destino cor)))))
 
 
 (define (todas-arestas-percorridas? rel)
@@ -222,25 +226,43 @@
 (define (atomic-prog-graphs prog-atomico grafoverts)
   (if (equal? grafoverts '())
       '()
-      (append (atomic-prog-verts prog-atomico (car grafoverts))
-              (atomic-prog-graphs prog-atomico (cdr grafoverts)))
+      (append (atomic-prog-verts prog-atomico (car (car grafoverts)) (car (cdr (car grafoverts))))
+              (atomic-prog-graphs prog-atomico (cdr grafoverts))
+      )
+  )
+  )
+(define (verifica-tipo prog-atomico grafo verts)
+  (if (equal? (cdr verts) '())
+      (atomic-prog-verts prog-atomico grafo verts)
+      (merge (atomic-prog-verts prog-atomico grafo verts)
+             )
       )
   )
 
-(define (atomic-prog-verts prog-atomico grafoverts)
-  (println grafoverts)
-  (if (equal? (car (cdr grafoverts)) '())
+(define (atomic-prog-verts prog-atomico grafo verts)
+  (if (equal? verts '())
       '()
-      (append (atomic-prog-exec (car grafoverts) (index-arestas (car grafoverts) (car (car (cdr grafoverts))) (atom prog-atomico)) (atom prog-atomico) (car (car (cdr grafoverts))))
-              (atomic-prog-verts prog-atomico (list (car grafoverts) (cdr (cdr grafoverts)))))
+      ;merge
+      (append (atomic-prog-exec grafo (index-arestas grafo (car verts) (atom prog-atomico)) (atom prog-atomico) (car verts))
+              (atomic-prog-verts prog-atomico grafo (cdr verts))
+              )
       )
 )
-                                                    ;(define (index-arestas grafo vertice-origem programa-aresta) 
+
+(define (merge grafoverts)
+  (if (equal? grafoverts '())
+      '()
+      (car (car grafoverts))))
+
+
+;(define (index-arestas grafo vertice-origem programa-aresta) 
  (define (atomic-prog-exec grafo lista-arestas prog-atomico vertice)
    (println vertice)
   (if (equal? lista-arestas '()) ;(lista-arestas '()
             '()
-            (cons(list (grafo-mudado grafo vertice (car lista-arestas) prog-atomico (destino-aresta grafo vertice (car lista-arestas)) 1) (list (destino-aresta grafo vertice (car lista-arestas)))) (atomic-prog-exec grafo (cdr lista-arestas) prog-atomico vertice))
+            (cons(list (grafo-mudado grafo vertice (car lista-arestas) prog-atomico (destino-aresta grafo vertice (car lista-arestas)) 1)
+                       (list (destino-aresta grafo vertice (car lista-arestas))))
+                 (atomic-prog-exec grafo (cdr lista-arestas) prog-atomico vertice))
             )
   )
             
@@ -257,8 +279,8 @@
 ;(valid-graph entrada grafo2)
 (define grafo1 ( graph-body (list 'A 'B 'C) #| Vertices |#
                             (list
-                             '((1 alfa B))
-                             '((1 alfa B) (1 beta C) (1 beta A))
+                             '((0 alfa B))
+                             '((0 alfa C) (0 beta C) (0 beta A))
                              '()
                              )
                )
