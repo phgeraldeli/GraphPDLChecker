@@ -191,39 +191,60 @@
 (define (programa-pdl prog)
   (PDL-program prog))
 
-(struct sequential (prog)#:transparent)
+(struct sequential (prog1 prog2)#:transparent)
+(define (strutc-prog1 prog)
+  (sequential-prog1 prog))
+(define (strutc-prog2 prog)
+  (sequential-prog2 prog))
 
-(define (seqprog seq)
-  (sequential-prog seq))
-(struct non-deterministic (lista)#:transparent)
-(define (list-nd prog)
-  (non-deterministic-lista prog))
+(struct non-deterministic (prog1 prog2)#:transparent)
+(define (nd-prog1 nd)
+  (non-deterministic-prog1 nd))
+(define (nd-prog2 nd)
+  (non-deterministic-prog2 nd))
+
 (struct iteration (prog)#:transparent)
+
 (struct atomic (prog)#:transparent)
+
 (define (atom atomic) 
   (atomic-prog atomic))
 
 
-(define nd1 (non-deterministic (list 'B 'C)))
+(define nd1 (non-deterministic (atomic 'B) (atomic 'C)))
 
-(define seq1 (sequential nd1))
-(define seq2 (sequential 'B))
-(define program1 (PDL (list seq1 seq2)))
 
 (define atomicA (atomic 'A))
 (define atomicB (atomic 'B))
 ;(define (index-arestas grafo vertice-origem programa-aresta)
+(define (verifica-final grafoverts)
+  (if (equal? grafoverts '())
+      #f
+      (or (todas-arestas-percorridas? (car grafoverts)) (verifica-final (cdr grafoverts)))))
 
-
-;(define (valid-graph pdl g)
-; (valid-graph-aux pdl (list g (car (vertices g)))))
-
+(define (valid-graph pdl g)
+ (prog-base pdl (list (list g (list (car (vertices g)))))))
+;sequencia
 #|(define (valid-graph-aux pdl lista-grafos-vertices)
   (match pdl
     [atomic? 
 |#
+(define (prog-base prog grafoverts)
+  (if (equal? grafoverts '())
+      #f
+      (match prog
+        [atomic? (atomic-prog-graphs prog grafoverts)]
+        [non-deterministic? (non-deterministic-graph (nd-prog1 prog) (nd-prog2 prog) grafoverts)]
+        [sequential? (sequential-graph )]
+        ;[iteration? (funcaoiter)]
+        [_ #f]
+        )
+      )
+  )
+    
 
 (define (atomic-prog-graphs prog-atomico grafoverts)
+  (println grafoverts)
   (if (equal? grafoverts '())
       '()
       (append (atomic-prog-verts prog-atomico (car (car grafoverts)) (car (cdr (car grafoverts))))
@@ -255,6 +276,22 @@
       (car (car grafoverts))))
 
 
+(define (non-deterministic-graph nd1 nd2 grafoverts)
+  (define exec1 (prog-base nd1))
+  (define exec2 (prog-base nd2))
+  (define NDMERG (merge exec1 exec2))
+  (if(equal? NDMERG '())
+     '()
+      NDMERG
+      )
+  )
+
+(define (sequential-graph prog1 prog2 grafoverts)
+  (define exec1 (prog-base prog1 grafoverts))
+  (define exec2 (prog-base prog2 exec1))
+  exec2
+  )
+
 ;(define (index-arestas grafo vertice-origem programa-aresta) 
  (define (atomic-prog-exec grafo lista-arestas prog-atomico vertice)
    (println vertice)
@@ -284,4 +321,4 @@
                              '()
                              )
                )
-)
+  )
