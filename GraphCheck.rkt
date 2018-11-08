@@ -218,27 +218,36 @@
 (define atomicB (atomic 'B))
 ;(define (index-arestas grafo vertice-origem programa-aresta)
 (define (verifica-final grafoverts)
+  ;(println (car (car grafoverts)))
   (if (equal? grafoverts '())
       #f
-      (or (todas-arestas-percorridas? (car grafoverts)) (verifica-final (cdr grafoverts)))))
+      (or (todas-arestas-percorridas? (relacoes (car (car grafoverts)))) (verifica-final (cdr grafoverts)))))
 
 (define (valid-graph pdl g)
- (prog-base pdl (list (list g (list (car (vertices g)))))))
+ (verifica-final (prog-base pdl (list (list g (list (car (vertices g))))))))
 ;sequencia
 #|(define (valid-graph-aux pdl lista-grafos-vertices)
   (match pdl
     [atomic? 
 |#
 (define (prog-base prog grafoverts)
+  (println prog)
   (if (equal? grafoverts '())
       #f
-      (match prog
+      (if (atomic? prog)
+          (atomic-prog-graphs prog grafoverts)
+          (if (non-deterministic? prog)
+              (non-deterministic-graph (nd-prog1 prog) (nd-prog2 prog) grafoverts)
+              (if (sequential? prog)
+                  (sequential-graph (sequential-prog1 prog) (sequential-prog2 prog) grafoverts)
+                  #f)))
+   #|   (match prog
         [atomic? (atomic-prog-graphs prog grafoverts)]
         [non-deterministic? (non-deterministic-graph (nd-prog1 prog) (nd-prog2 prog) grafoverts)]
         [sequential? (sequential-graph )]
         ;[iteration? (funcaoiter)]
         [_ #f]
-        )
+        )|#
       )
   )
     
