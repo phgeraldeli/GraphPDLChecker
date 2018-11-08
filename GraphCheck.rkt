@@ -330,18 +330,27 @@
 
 
 
-(define teste (list (list (graph-body '(A B C) '(((0 alfa B)) ((1 alfa C) (0 beta C) (0 beta A)) ())) '(C))
-                    (list (graph-body '(A B C) '(((1 alfa B)) ((0 alfa C) (1 beta C) (0 beta A)) ())) '(B))))
+(define teste (list (list (graph-body '(A B C) '(((0 alfa B)) ((1 alfa C) (0 beta C) (0 beta A)) ())) '(C F K))
+                    (list (graph-body '(A B C) '(((1 alfa B)) ((0 alfa C) (0 beta C) (0 beta A)) ())) '(B E P))
+                    (list (graph-body '(A B C) '(((1 alfa B)) ((2 alfa C) (3 beta C) (0 beta A)) ())) '(B G Q))
+                    (list (graph-body '(A B C) '(((1 alfa B)) ((0 alfa C) (0 beta C) (6 beta A)) ())) '(A H U))
+                    ))
 
 (define (merge grafo-verts)
-  (if (equal? grafo-verts '())
-      '()
-      (list (graph-body (vertices (car (car grafo-verts)))
-                        (junta-cor (relacoes (car (car grafo-verts))) (relacoes (car (car (cdr grafo-verts))))))
-                        (remove-duplicates (append (car (cdr (car grafo-verts))) (car (cdr (car (cdr grafo-verts))))))
-             )
-      )
+  (cond
+    [(equal? grafo-verts '()) '()]
+    [(equal? (cdr grafo-verts) '()) (car grafo-verts)]
+    [else (if (equal? grafo-verts '())
+        '()
+        (list (graph-body (vertices (car (car grafo-verts)))
+                          (junta-cor (relacoes (car (car grafo-verts))) (relacoes (car (merge (cdr grafo-verts))))))
+                          (remove-duplicates (append (car (cdr (car grafo-verts))) (car (cdr (merge (cdr grafo-verts))))))
+              )
+        )]
   )
+)
+
+
 
 ; junta as cores dado duas relacoes
 (define (junta-cor rel1 rel2)
