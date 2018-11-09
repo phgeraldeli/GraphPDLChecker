@@ -1,4 +1,4 @@
-Exemplo 1- At�mico:
+Exemplo 1- Atomico:
 
 (define grafoatomico (graph-body (list 'A 'B) (list '((0 alfa B)) '()))) 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -6,7 +6,7 @@ pdl = (alfa)
 pdl depois do parser = (atomic 'alfa)
 
 Como Rodar: (valid-graph (atomic 'alfa) grafoatomico)
-Retorno: true (grafo v�lido)
+Retorno: true (grafo valido)
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 pdl = '()
 pdl depois do parser = '()
@@ -20,7 +20,11 @@ pdl depois do parser = (sequential (atomic 'alfa)(atomic 'beta))
 Como Rodar: (valid-graph (sequential (atomic 'alfa)(atomic 'beta)) grafoatomico )
 Retorno: Falso;
 
-Exemplo 2 - N�o deterministico:
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Exemplo 2 - Nao deterministico:
 
 (define grafoND (graph-body (list 'A 'B 'C) (list'((0 alfa B) (0 beta C)) '() '() )))
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -28,7 +32,7 @@ pdl = ( alfa U beta )
 pdl depois do parser = (non-deterministic (atomic 'alfa) (atomic 'beta))
 
 Como Rodar:( valid-graph (non-deterministic (atomic 'alfa) (atomic 'beta)) grafoND)
-Retorno: true(grafo v�lido)
+Retorno: true(grafo valido)
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 pdl = alfa 
 pdl depois do parser - (atomic 'alfa)
@@ -41,7 +45,11 @@ pdl depois do parser = (non-deterministic (atomic 'alfa) (sequential (atomic 'be
 
 Como rodar (valid-graph (non-deterministic (atomic 'alfa) (sequential (atomic 'beta) (atomic 'c)) grafoND)
 Retorno: false
+
+
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
 Exemplo 3 - Iterativo:
 
 (define grafoiterativo (graph-body (list 'A) (list '((0 alfa A)))))
@@ -57,8 +65,12 @@ pdl depois do parser = (sequential (iteration 'alfa) (atomic 'beta))
 
 Como Rodar: (valid-graph (sequential (iteration 'alfa) (atomic 'beta)) grafoiterativo)
 Retorno: False;
+
+
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Exemplo 4 - Sequencia de n�o deterministico:
+
+
+Exemplo 4 - Sequencia de nao deterministico:
 
 (define grafo4 (graph-body (list 'A 'B 'C 'D 'E 'F) (list'((0 alfa B) (0 gama C))'((0 c D) (0 d E))'((0 h F))'()'()'())))
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -66,14 +78,19 @@ pdl = ((alfa;cUd)U(gama;h)
 pdl depois do parser = (define programa4 (non-deterministic (sequential (atomic 'alfa) (non-deterministic (atomic 'c) (atomic 'd))) (sequential (atomic 'gama)(atomic 'h))))
 
 Como rodar: (valid-graph programa4 grafo4) 
-retorno: true (grafo v�lido)
+retorno: true (grafo valido)
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 pdl = ((alfa;cUd)U(gama)
 pdl depois do parser = (define programa5 (non-deterministic (sequential (atomic 'alfa) (non-deterministic (atomic 'c) (atomic 'd)))(atomic 'gama)))
 
 Como rodar: (valid-graph programa5 grafo4) 
-retorno: false (grafo inv�lido)
+retorno: false (grafo invalido)
+
+
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
 
 Exemplo 5 - Sequencia de Iteration+nonDetermistic
 
