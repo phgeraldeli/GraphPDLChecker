@@ -241,12 +241,13 @@
   (match pdl
     [atomic? 
 |#
+
 (define (prog-base prog grafoverts)
   ;(println prog)
   (if (equal? grafoverts '())
       #f
       (if (atomic? prog)
-          (atomic-prog-graphs prog grafoverts)
+          (printaerro (atomic-prog-graphs prog grafoverts) prog)
           (if (non-deterministic? prog)
               (non-deterministic-graph (nd-prog1 prog) (nd-prog2 prog) grafoverts)
               (if (sequential? prog)
@@ -262,7 +263,15 @@
       )
   )
     
+(define (printaerro resultado programa)
+  (if (equal? resultado '())
+      (printaerro-aux programa)
+      resultado))
 
+(define (printaerro-aux programa)
+  (println programa)
+  '()
+  )
 (define (atomic-prog-graphs prog-atomico grafoverts)
   ;(println grafoverts)
   (if (equal? grafoverts '())
@@ -330,8 +339,20 @@
                  (atomic-prog-exec-aux grafo (cdr lista-arestas) prog-atomico vertice))
             )
   )
-            
-               
+ #|           
+(define (iterative n prog grafoverts)
+  (if (equal? n 0)
+      '()
+      (append grafoverts (iterative-aux prog grafoverts n)
+  )))
+(define (iterative-aux prog grafoverts n)
+  (define x (prog-base
+  (if (equal? '() grafoverts)
+      '()
+      ()))))|#
+  
+      
+
 (define grafo2 (graph-body (list 'A 'B)
                            (list
                             '((0 alfa B))
