@@ -231,7 +231,7 @@
 ;(define (index-arestas grafo vertice-origem programa-aresta)
 (define (verifica-final grafoverts)
   ;(println (car (car grafoverts)))
-  (println grafoverts)
+  ;(println grafoverts)
   (if (equal? grafoverts '())
       #f
       (or (todas-arestas-percorridas? (relacoes (car (car grafoverts)))) (verifica-final (cdr grafoverts)))))
@@ -350,7 +350,7 @@
   )
 (define (iterative-aux prog grafoverts n)
   (define iteracao (prog-base (iter-prog prog) grafoverts))
-  (println iteracao)
+  ;(println iteracao)
   (if(equal? (car iteracao) '())
      grafoverts
      (append grafoverts (iterative (- n 1) prog iteracao))))
@@ -449,4 +449,3 @@
                                   )
                                  )
   )
-;(valid-graph (non-deterministic (atomic 'beta) (sequential (atomic 'alfa) (atomic 'alfa))) grafoND)
