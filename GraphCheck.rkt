@@ -182,6 +182,17 @@
     )
 )
 
+
+(define (conta-arestas arestas)
+  (if (equal? (cdr arestas) '())
+      (conta-arestas-vertice (car arestas))
+      (+ (conta-arestas-vertice (car arestas))(conta-arestas (cdr arestas)))
+      )
+  )
+(define (conta-arestas-vertice arestas-vertice)
+  (if (equal? arestas-vertice '())
+      0
+      (+ 1 (conta-arestas-vertice (cdr arestas-vertice)))))
 ;(struct graph-body (W R))
 ;(define (vertices grafo)
  ; (graph-body-W grafo))
@@ -261,21 +272,16 @@
       )
   )
   )
-(define (verifica-tipo prog-atomico grafo verts)
-  (if (equal? (cdr verts) '())
-      (atomic-prog-verts prog-atomico grafo verts)
-      (merge (atomic-prog-verts prog-atomico grafo verts)
-             )
-      )
-  )
 
 (define (atomic-prog-verts prog-atomico grafo verts)
+  ;(define erro (atomic-prog-verts prog-atomico grafo (cdr verts)))
   (if (equal? verts '())
       '()
-      ;merge
-      (append (atomic-prog-exec grafo (index-arestas grafo (car verts) (atom prog-atomico)) (atom prog-atomico) (car verts))
-              (atomic-prog-verts prog-atomico grafo (cdr verts))
-              )
+      (if (equal? #f (atomic-prog-exec grafo (index-arestas grafo (car verts) (atom prog-atomico)) (atom prog-atomico) (car verts)))
+          '()
+          (append (atomic-prog-exec grafo (index-arestas grafo (car verts) (atom prog-atomico)) (atom prog-atomico) (car verts))
+                  (atomic-prog-verts prog-atomico grafo (cdr verts)))
+      )
       )
 )
 
@@ -283,41 +289,45 @@
 
 (define (non-deterministic-graph nd1 nd2 grafoverts)
   (define exec1 (prog-base nd1 grafoverts))
-  (println exec1)
-  (define exec2 (non-deterministic-graph-aux exec1 grafoverts nd2))
-  (define NDMERG (merge exec2))
-  (if(equal? NDMERG '())
-     '()
-      NDMERG
-      )
+  (define exec2 (prog-base nd2 grafoverts))
+  (define NDMERG (list (merge (append exec1 exec2))))
+  NDMERG
   )
-(define (non-deterministic-graph-aux exec1 grafoverts nd2)
-  (if (equal? exec1 '())
-      (prog-base nd2 grafoverts)
-      (prog-base nd2 (chaexec1
-                 )
-      )
-  )
+
 (define (change-final-vertex grafoverts vert)
   (if (equal? grafoverts '())
       '()
       (cons (list (car (car grafoverts)) (list vert)) (change-final-vertex (cdr grafoverts) vert))
       )
   )
+
 (define (sequential-graph prog1 prog2 grafoverts)
   (define exec1 (prog-base prog1 grafoverts))
   (define exec2 (prog-base prog2 exec1))
   exec2
   )
 
+(define (falso-ou-lista algo)
+  (if (equal? #f algo)
+      '()
+      algo
+      ))
+  
 ;(define (index-arestas grafo vertice-origem programa-aresta) 
  (define (atomic-prog-exec grafo lista-arestas prog-atomico vertice)
-   ;(println vertice)
+  (if (equal? lista-arestas '())
+      #f
+      (atomic-prog-exec-aux grafo lista-arestas prog-atomico vertice)
+      
+      )
+   )
+
+(define (atomic-prog-exec-aux grafo lista-arestas prog-atomico vertice)
   (if (equal? lista-arestas '()) ;(lista-arestas '()
             '()
             (cons(list (grafo-mudado grafo vertice (car lista-arestas) prog-atomico (destino-aresta grafo vertice (car lista-arestas)) 1)
                        (list (destino-aresta grafo vertice (car lista-arestas))))
-                 (atomic-prog-exec grafo (cdr lista-arestas) prog-atomico vertice))
+                 (atomic-prog-exec-aux grafo (cdr lista-arestas) prog-atomico vertice))
             )
   )
             
@@ -339,21 +349,25 @@
                     (list (graph-body '(A B C) '(((1 alfa B)) ((2 alfa C) (3 beta C) (0 beta A)) ())) '(B G Q))
                     (list (graph-body '(A B C) '(((1 alfa B)) ((0 alfa C) (0 beta C) (6 beta A)) ())) '(A H U))
                     ))
-
+(define (acha-falso-na-lista grafoverts)
+  (if (equal? #f (car grafoverts))
+      #t
+      #f))
 (define (merge grafo-verts)
-  (cond
-    [(equal? grafo-verts '()) '()]
-    [(equal? (cdr grafo-verts) '()) (car grafo-verts)]
-    [else (if (equal? grafo-verts '())
-        '()
-        (list (graph-body (vertices (car (car grafo-verts)))
+  (if (acha-falso-na-lista grafo-verts)
+      '()
+      (cond
+        [(equal? grafo-verts '()) '()]
+        [(equal? (cdr grafo-verts) '()) (car grafo-verts)]
+        [else (if (equal? grafo-verts '())
+                  '()
+                  (list (graph-body (vertices (car (car grafo-verts)))
                           (junta-cor (relacoes (car (car grafo-verts))) (relacoes (car (merge (cdr grafo-verts))))))
                           (remove-duplicates (append (car (cdr (car grafo-verts))) (car (cdr (merge (cdr grafo-verts))))))
               )
         )]
   )
-)
-
+))
 
 
 ; junta as cores dado duas relacoes
@@ -380,3 +394,24 @@
                              )
                )
   )
+(define grafoND (graph-body (list 'A 'B 'C)
+                            (list
+                             '((0 alfa B) (0 beta C))
+                             '((0 alfa C))
+                             '()
+                             )
+                            )
+  )
+(define alfaUbeta (non-deterministic (atomic 'alfa) (atomic 'beta)))
+(define grafo4 (graph-body (list 'A 'B 'C 'D 'E 'F)
+                           (list
+                            '((0 alfa B) (0 gama C))
+                            '((0 c D) (0 d E))
+                            '((0 h F))
+                            '()
+                            '()
+                            '((0 alfa A))
+                            )
+                           )
+  )
+;(valid-graph (non-deterministic (atomic 'beta) (sequential (atomic 'alfa) (atomic 'alfa))) grafoND)
