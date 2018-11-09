@@ -241,9 +241,22 @@
       (if (equal? (relacoes g) '(()))
           #t
           #f)
-      (verifica-final (prog-base pdl (list (list g (list (car (vertices g)))))))
+      (erro-no-grafo? (prog-base pdl (list (list g (list (car (vertices g)))))))
       )
   )
+
+(define (erro-no-grafo? grafoverts)
+  (define valido (verifica-final grafoverts))
+  (if (equal? valido #t)
+      #t
+      (printa-erro grafoverts)
+      )
+  )
+(define (printa-erro grafoverts)
+  (println "Erro nas arestas com coloracao 0 ")
+  (println grafoverts) 
+  )
+  
 ;sequencia
 #|(define (valid-graph-aux pdl lista-grafos-vertices)
   (match pdl
