@@ -215,7 +215,8 @@
   (non-deterministic-prog2 nd))
 
 (struct iteration (prog)#:transparent)
-
+(define (iter-prog prog)
+  (iteration-prog prog))
 (struct atomic (prog)#:transparent)
 
 (define (atom atomic) 
@@ -230,12 +231,19 @@
 ;(define (index-arestas grafo vertice-origem programa-aresta)
 (define (verifica-final grafoverts)
   ;(println (car (car grafoverts)))
+  (println grafoverts)
   (if (equal? grafoverts '())
       #f
       (or (todas-arestas-percorridas? (relacoes (car (car grafoverts)))) (verifica-final (cdr grafoverts)))))
 
 (define (valid-graph pdl g)
- (verifica-final (prog-base pdl (list (list g (list (car (vertices g))))))))
+  (if (equal? pdl '())
+      (if (equal? (relacoes g) '(()))
+          #t
+          #f)
+      (verifica-final (prog-base pdl (list (list g (list (car (vertices g)))))))
+      )
+  )
 ;sequencia
 #|(define (valid-graph-aux pdl lista-grafos-vertices)
   (match pdl
@@ -245,23 +253,17 @@
 (define (prog-base prog grafoverts)
   ;(println prog)
   (if (equal? grafoverts '())
-      #f
+      '()
       (if (atomic? prog)
           (printaerro (atomic-prog-graphs prog grafoverts) prog)
           (if (non-deterministic? prog)
-              (non-deterministic-graph (nd-prog1 prog) (nd-prog2 prog) grafoverts)
+              (printaerro (non-deterministic-graph (nd-prog1 prog) (nd-prog2 prog) grafoverts) prog)
               (if (sequential? prog)
-                  (sequential-graph (sequential-prog1 prog) (sequential-prog2 prog) grafoverts)
-                  #f)))
-   #|   (match prog
-        [atomic? (atomic-prog-graphs prog grafoverts)]
-        [non-deterministic? (non-deterministic-graph (nd-prog1 prog) (nd-prog2 prog) grafoverts)]
-        [sequential? (sequential-graph )]
-        ;[iteration? (funcaoiter)]
-        [_ #f]
-        )|#
-      )
-  )
+                  (printaerro (sequential-graph (sequential-prog1 prog) (sequential-prog2 prog) grafoverts) prog)
+                  (if (iteration? prog)
+                      (printaerro (iterative (* (conta-arestas(relacoes (car (car grafoverts)))) (conta-arestas (relacoes (car (car grafoverts))))) prog grafoverts) prog)
+                      #f))))))
+
     
 (define (printaerro resultado programa)
   (if (equal? resultado '())
@@ -339,18 +341,19 @@
                  (atomic-prog-exec-aux grafo (cdr lista-arestas) prog-atomico vertice))
             )
   )
- #|           
+           
 (define (iterative n prog grafoverts)
-  (if (equal? n 0)
+  (if (or (equal? n 0) (equal? grafoverts '()))
       '()
-      (append grafoverts (iterative-aux prog grafoverts n)
-  )))
+      (iterative-aux prog grafoverts n)
+  )
+  )
 (define (iterative-aux prog grafoverts n)
-  (define x (prog-base
-  (if (equal? '() grafoverts)
-      '()
-      ()))))|#
-  
+  (define iteracao (prog-base (iter-prog prog) grafoverts))
+  (println iteracao)
+  (if(equal? (car iteracao) '())
+     grafoverts
+     (append grafoverts (iterative (- n 1) prog iteracao))))
       
 
 (define grafo2 (graph-body (list 'A 'B)
@@ -371,9 +374,11 @@
                     (list (graph-body '(A B C) '(((1 alfa B)) ((0 alfa C) (0 beta C) (6 beta A)) ())) '(A H U))
                     ))
 (define (acha-falso-na-lista grafoverts)
-  (if (equal? #f (car grafoverts))
+  (if (equal? grafoverts '())
       #t
-      #f))
+      (if (equal? #f (car grafoverts))
+          #t
+          #f)))
 (define (merge grafo-verts)
   (if (acha-falso-na-lista grafo-verts)
       '()
@@ -434,5 +439,14 @@
                             '((0 alfa A))
                             )
                            )
+  )
+(define grafosimples (graph-body (list 'A 'B 'C 'D)
+                                 (list
+                                  '((0 alfa B))
+                                  '((0 alfa C))
+                                  '((0 alfa D))
+                                  '()
+                                  )
+                                 )
   )
 ;(valid-graph (non-deterministic (atomic 'beta) (sequential (atomic 'alfa) (atomic 'alfa))) grafoND)
