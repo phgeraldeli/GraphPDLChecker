@@ -1,4 +1,4 @@
-Exemplo 1- Atômico:
+Exemplo 1- Atï¿½mico:
 
 (define grafoatomico (graph-body (list 'A 'B) (list '((0 alfa B)) '()))) 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -6,7 +6,7 @@ pdl = (alfa)
 pdl depois do parser = (atomic 'alfa)
 
 Como Rodar: (valid-graph (atomic 'alfa) grafoatomico)
-Retorno: true (grafo válido)
+Retorno: true (grafo vï¿½lido)
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 pdl = '()
 pdl depois do parser = '()
@@ -20,7 +20,7 @@ pdl depois do parser = (sequential (atomic 'alfa)(atomic 'beta))
 Como Rodar: (valid-graph (sequential (atomic 'alfa)(atomic 'beta)) grafoatomico )
 Retorno: Falso;
 
-Exemplo 2 - Não deterministico:
+Exemplo 2 - Nï¿½o deterministico:
 
 (define grafoND (graph-body (list 'A 'B 'C) (list'((0 alfa B) (0 beta C)) '() '() )))
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -28,13 +28,13 @@ pdl = ( alfa U beta )
 pdl depois do parser = (non-deterministic (atomic 'alfa) (atomic 'beta))
 
 Como Rodar:( valid-graph (non-deterministic (atomic 'alfa) (atomic 'beta)) grafoND)
-Retorno: true(grafo válido)
+Retorno: true(grafo vï¿½lido)
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 pdl = alfa 
 pdl depois do parser - (atomic 'alfa)
 
 Como rodar (valid-graph (atomic 'alfa) grafoND)
-Retorno: true
+Retorno: false
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 pdl = (alfa)U(beta;c)
 pdl depois do parser = (non-deterministic (atomic 'alfa) (sequential (atomic 'beta) (atomic 'c))
@@ -47,9 +47,9 @@ Exemplo 3 - Iterativo:
 (define grafoiterativo (graph-body (list 'A) (list '((0 alfa A)))))
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 pdl = alfa*
-pdl depois do parser = (iteration 'alfa)
+pdl depois do parser = (iteration (atomic 'alfa))
 
-Como Rodar: (valid-graph (iteration 'alfa) grafoiterativo)
+Como Rodar: (valid-graph (iteration (atomic 'alfa)) grafoiterativo)
 Retorno: True;
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 pdl = alfa*;beta
@@ -58,7 +58,7 @@ pdl depois do parser = (sequential (iteration 'alfa) (atomic 'beta))
 Como Rodar: (valid-graph (sequential (iteration 'alfa) (atomic 'beta)) grafoiterativo)
 Retorno: False;
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Exemplo 4 - Sequencia de não deterministico:
+Exemplo 4 - Sequencia de nï¿½o deterministico:
 
 (define grafo4 (graph-body (list 'A 'B 'C 'D 'E 'F) (list'((0 alfa B) (0 gama C))'((0 c D) (0 d E))'((0 h F))'()'()'())))
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -66,13 +66,13 @@ pdl = ((alfa;cUd)U(gama;h)
 pdl depois do parser = (define programa4 (non-deterministic (sequential (atomic 'alfa) (non-deterministic (atomic 'c) (atomic 'd))) (sequential (atomic 'gama)(atomic 'h))))
 
 Como rodar: (valid-graph programa4 grafo4) 
-retorno: true (grafo válido)
+retorno: true (grafo vï¿½lido)
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 pdl = ((alfa;cUd)U(gama)
 pdl depois do parser = (define programa5 (non-deterministic (sequential (atomic 'alfa) (non-deterministic (atomic 'c) (atomic 'd)))(atomic 'gama)))
 
 Como rodar: (valid-graph programa5 grafo4) 
-retorno: false (grafo inválido)
+retorno: false (grafo invï¿½lido)
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Exemplo 5 - Sequencia de Iteration+nonDetermistic

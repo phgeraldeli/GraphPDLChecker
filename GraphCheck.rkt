@@ -261,7 +261,7 @@
               (if (sequential? prog)
                   (printaerro (sequential-graph (sequential-prog1 prog) (sequential-prog2 prog) grafoverts) prog)
                   (if (iteration? prog)
-                      (printaerro (iterative (* (conta-arestas(relacoes (car (car grafoverts)))) (conta-arestas (relacoes (car (car grafoverts))))) prog grafoverts) prog)
+                      (printaerro (iterative (* 2 (* (conta-arestas(relacoes (car (car grafoverts)))) (conta-arestas (relacoes (car (car grafoverts)))))) prog grafoverts) prog)
                       #f))))))
 
     
@@ -351,9 +351,11 @@
 (define (iterative-aux prog grafoverts n)
   (define iteracao (prog-base (iter-prog prog) grafoverts))
   ;(println iteracao)
-  (if(equal? (car iteracao) '())
-     grafoverts
-     (append grafoverts (iterative (- n 1) prog iteracao))))
+  (if (or (equal? iteracao '()) (equal? #f iteracao))
+      grafoverts
+      (if(equal? (car iteracao) '())
+         grafoverts
+         (append grafoverts (iterative (- n 1) prog iteracao)))))
       
 
 (define grafo2 (graph-body (list 'A 'B)
@@ -420,14 +422,7 @@
                              )
                )
   )
-(define grafoND (graph-body (list 'A 'B 'C)
-                            (list
-                             '((0 alfa B) (0 beta C))
-                             '((0 alfa C))
-                             '()
-                             )
-                            )
-  )
+
 (define alfaUbeta (non-deterministic (atomic 'alfa) (atomic 'beta)))
 (define grafo4 (graph-body (list 'A 'B 'C 'D 'E 'F)
                            (list
