@@ -412,35 +412,3 @@
 
 (define rel1 '( ((0 alfa B)) ((1 alfa C) (0 beta C) (0 beta A)) ()))
 (define rel2 '( ((1 alfa B)) ((0 alfa C) (1 beta C) (0 beta A)) ()))
-
-(define teste3 (list rel1 rel2))
-(define grafo1 ( graph-body (list 'A 'B 'C) #| Vertices |#
-                            (list
-                             '((0 alfa B))
-                             '((0 alfa C) (0 beta C) (0 beta A))
-                             '()
-                             )
-               )
-  )
-
-(define alfaUbeta (non-deterministic (atomic 'alfa) (atomic 'beta)))
-(define grafo4 (graph-body (list 'A 'B 'C 'D 'E 'F)
-                           (list
-                            '((0 alfa B) (0 gama C))
-                            '((0 c D) (0 d E))
-                            '((0 h F))
-                            '()
-                            '()
-                            '((0 alfa A))
-                            )
-                           )
-  )
-(define grafosimples (graph-body (list 'A 'B 'C 'D)
-                                 (list
-                                  '((0 alfa B))
-                                  '((0 alfa C))
-                                  '((0 alfa D))
-                                  '()
-                                  )
-                                 )
-  )
